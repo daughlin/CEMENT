@@ -2,6 +2,7 @@ package edu.gcc.cement;
 
 public class Course {
 
+private String name;
 private String courseCode;
 private String section;
 private String department;
@@ -10,7 +11,11 @@ private String day;
 private int startTime;
 private int endTime;
 private String semester;
+private String location;
+private int credits;
 private String description;
+
+
 
     /**Constructor
      *
@@ -24,7 +29,8 @@ private String description;
      * @param semester
      * @param description
      */
-    public Course(String courseCode, String section, String department, String professor, String day, int startTime, int endTime, String semester, String description){
+    public Course(String name, String courseCode, String section, String department, String professor, String day, int startTime, int endTime, String semester, String location, int credits, String description){
+        this.name = name;
         this.courseCode = courseCode;
         this.section = section;
         this.department = department;
@@ -33,6 +39,8 @@ private String description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.semester = semester;
+        this.location = location;
+        this.credits = credits;
         this.description = description;
 
     }
@@ -40,6 +48,7 @@ private String description;
     /**
      *Getters and Setters
      */
+    public String getName() {return name;}
     public String getCourseCode() {return courseCode;}
     public void setCourseCode(String courseCode) {}
     public String getSection() {return section;}
@@ -56,6 +65,8 @@ private String description;
     public void setEndTime(int endTime) {this.endTime = endTime;}
     public String getSemester() {return semester;}
     public void setSemester(String semester) {semester = semester;}
+    public String getLocation() {return location;}
+    public int getCredits() {return credits;}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
 }
