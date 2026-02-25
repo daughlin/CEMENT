@@ -1,4 +1,5 @@
 package edu.gcc.cement;
+import java.util.ArrayList;
 
 public class Course {
 
@@ -7,9 +8,7 @@ private String courseCode;
 private String section;
 private String department;
 private String professor;
-private String day;
-private int startTime;
-private int endTime;
+private ArrayList<Time> times;
 private String semester;
 private String location;
 private int credits;
@@ -23,25 +22,23 @@ private String description;
      * @param section
      * @param department
      * @param professor
-     * @param day
-     * @param startTime
-     * @param endTime
+     * @param times
      * @param semester
      * @param description
      */
-    public Course(String name, String courseCode, String section, String department, String professor, String day, int startTime, int endTime, String semester, String location, int credits, String description){
+    public Course(String name, String courseCode, String section, String department, String professor, ArrayList<Time> times, String semester, String location, int credits, String description){
         this.name = name;
         this.courseCode = courseCode;
         this.section = section;
         this.department = department;
         this.professor = professor;
-        this.day = day;
-        this.startTime = startTime;
-        this.endTime = endTime;
         this.semester = semester;
         this.location = location;
         this.credits = credits;
         this.description = description;
+
+        this.times = new ArrayList<Time>();
+        this.times.addAll(times);
 
     }
 
@@ -57,12 +54,11 @@ private String description;
     public void setDepartment(String department) {department = department;}
     public String getProfessor() {return professor;}
     public void setProfessor(String professor) {professor = professor;}
-    public String getDay() {return day;}
-    public void setDay(String day) {this.day = day;}
-    public int getStartTime() {return startTime;}
-    public void setStartTime(int startTime) {this.startTime = startTime;}
-    public int getEndTime() {return endTime;}
-    public void setEndTime(int endTime) {this.endTime = endTime;}
+
+    public ArrayList<Time> getTimes() {
+        return times;
+    }
+
     public String getSemester() {return semester;}
     public void setSemester(String semester) {semester = semester;}
     public String getLocation() {return location;}
