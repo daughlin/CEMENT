@@ -19,10 +19,6 @@ public class Main {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
 
-        System.out.println("Working dir: " + System.getProperty("user.dir"));
-        System.out.println("Absolute path: " + f.getAbsolutePath());
-        System.out.println("Exists? " + f.exists());
-
         try {
             root = mapper.readTree(f);
             for (JsonNode c : root.get("classes")) {
@@ -31,12 +27,16 @@ public class Main {
                 String number = c.path("number").asText();
                 int credits = c.path("credits").asInt();
                 String section = c.path("section").asText();
-                //String professor;
+
+                ArrayList<String> professors = new ArrayList<String>();
+                for(JsonNode prof : c.path("faculty")) {
+                    professors.add(prof.asText(""));
+                }
                 ArrayList<Time> times = parseTimes(c.path("times"));
                 String semester = c.path("semester").asText();
                 String location = c.path("location").asText();
 
-                courses.add(new Course(name, dept + " " + number, section, dept, "test", times, semester, location, credits, ""));
+                courses.add(new Course(name, dept + " " + number, section, dept, professors, times, semester, location, credits, ""));
 
             }
         } catch (IOException e) {
@@ -50,6 +50,10 @@ public class Main {
             System.out.println(course.getCourseCode());
             System.out.println(course.getDepartment());
             System.out.println(course.getSection());
+            for (String prof : course.getProfessors()) {
+                System.out.println(prof);
+            }
+
             for (Time time : course.getTimes()) {
                 System.out.println(time.getDay());
                 System.out.println(time.getStartTime());

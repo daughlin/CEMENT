@@ -7,7 +7,7 @@ private String name;
 private String courseCode;
 private String section;
 private String department;
-private String professor;
+private ArrayList<String> professors;
 private ArrayList<Time> times;
 private String semester;
 private String location;
@@ -17,21 +17,23 @@ private String description;
 
 
     /**Constructor
-     *
+     * @param name
      * @param courseCode
      * @param section
      * @param department
-     * @param professor
+     * @param professors
      * @param times
      * @param semester
+     * @param location
+     * @param credits
      * @param description
      */
-    public Course(String name, String courseCode, String section, String department, String professor, ArrayList<Time> times, String semester, String location, int credits, String description){
+    public Course(String name, String courseCode, String section, String department, ArrayList<String> professors, ArrayList<Time> times, String semester, String location, int credits, String description){
         this.name = name;
         this.courseCode = courseCode;
         this.section = section;
         this.department = department;
-        this.professor = professor;
+        this.professors = professors;
         this.semester = semester;
         this.location = location;
         this.credits = credits;
@@ -52,8 +54,9 @@ private String description;
     public void setSection(String section) {}
     public String getDepartment() {return department;}
     public void setDepartment(String department) {department = department;}
-    public String getProfessor() {return professor;}
-    public void setProfessor(String professor) {professor = professor;}
+    public ArrayList<String> getProfessors() {return professors;}
+    public void setProfessors(String professors) {
+        professors = professors;}
 
     public ArrayList<Time> getTimes() {
         return times;
