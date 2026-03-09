@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
+import io.javalin.Javalin;
+import io.javalin.http.staticfiles.Location;
+
 /**
  * @author heisertd
  */
@@ -47,12 +50,20 @@ public class Main {
 
 
 
+        Javalin app = Javalin.create(config -> {
+            config.staticFiles.add(staticFiles -> {
+                staticFiles.directory = "../frontend/pages";
+                staticFiles.location = Location.EXTERNAL;
+            });
+        }).start(7000);
+
+        CalendarViewController.registerRoutes(app);
     }
 
     /**
      * Function to run the program
      */
-    public void run(){
+    public static void run(){
 
     }
 
