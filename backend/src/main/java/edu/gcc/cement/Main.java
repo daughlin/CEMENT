@@ -21,6 +21,8 @@ public class Main {
 
         try {
             root = mapper.readTree(f);
+
+            // building the courses from the json
             for (JsonNode c : root.get("classes")) {
                 String name = c.path("name").asText();
                 String dept = c.path("subject").asText();
@@ -45,24 +47,6 @@ public class Main {
 
 
 
-        for (Course course : courses) {
-            System.out.println(course.getName());
-            System.out.println(course.getCourseCode());
-            System.out.println(course.getDepartment());
-            System.out.println(course.getSection());
-            for (String prof : course.getProfessors()) {
-                System.out.println(prof);
-            }
-
-            for (Time time : course.getTimes()) {
-                System.out.println(time.getDay());
-                System.out.println(time.getStartTime());
-                System.out.println(time.getEndTime());
-            }
-            System.out.println("-----------------------------");
-        }
-
-
     }
 
     /**
@@ -72,6 +56,11 @@ public class Main {
 
     }
 
+    /**
+     * Helper function to parse class times by day, start time, and end time from the json file
+     * @param timesNode
+     * @return ArrayList of time objects for the Course class
+     */
     private static ArrayList<Time> parseTimes(JsonNode timesNode) {
         ArrayList<Time> times = new ArrayList<>();
         if (timesNode == null || !timesNode.isArray()) return times;
@@ -88,6 +77,11 @@ public class Main {
         return times;
     }
 
+    /**
+     * Helper function to convert time from HH:MM:SS format to minutes from midnight
+     * @param hhmmss
+     * @return Time converted to minutes from midnight
+     */
     private static int toMinutes(String hhmmss) {
         if (hhmmss == null || hhmmss.isBlank()) return -1;
         String[] parts = hhmmss.split(":");
