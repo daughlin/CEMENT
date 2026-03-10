@@ -47,9 +47,11 @@ public class Main {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+        System.out.println(courses.get(10).getProfessors().get(0));
 
         // example code for how to use a search without filters
-//        Search testSearch = new Search("COMP", new ArrayList<Filter>(), courses);
+        // use "n credit(s)" format to search by credits
+//        Search testSearch = new Search("3 credits", new ArrayList<Filter>(), courses);
 //        for (Course course : testSearch.getResults()) {
 //            System.out.println(course.getName());
 //            System.out.println(course.getCourseCode());
@@ -57,14 +59,14 @@ public class Main {
 
 
 
-        Javalin app = Javalin.create(config -> {
-            config.staticFiles.add(staticFiles -> {
-                staticFiles.directory = "../frontend/pages";
-                staticFiles.location = Location.EXTERNAL;
-            });
-        }).start(7000);
-
-        CalendarViewController.registerRoutes(app);
+//        Javalin app = Javalin.create(config -> {
+//            config.staticFiles.add(staticFiles -> {
+//                staticFiles.directory = "../frontend/pages";
+//                staticFiles.location = Location.EXTERNAL;
+//            });
+//        }).start(7000);
+//
+//        CalendarViewController.registerRoutes(app);
     }
 
     /**

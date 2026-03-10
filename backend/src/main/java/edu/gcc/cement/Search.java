@@ -86,10 +86,16 @@ public class Search {
         }
 
         String q = query.toLowerCase();
+
+
         //check all possible parameters that the query could match
         return course.getName().toLowerCase().contains(q)
                 || course.getCourseCode().toLowerCase().contains(q)
-                || course.getProfessors().contains(q);
+                || course.getProfessors().contains(q)
+                || q.equals("" + course.getCredits() + " credits")
+                || q.equals("" + course.getCredits() + " credit");
+
+
     }
 
 
