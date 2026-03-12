@@ -15,10 +15,13 @@ public class Search {
      * @param query
      * @param filters
      */
-    public Search(String query, ArrayList<Filter> filters){
+    public Search(String query, ArrayList<Filter> filters, ArrayList<Course> courses){
         this.query = query;
         this.filters = filters;
-        this.results = new ArrayList<>();
+        this.results = new ArrayList<Course>();
+        this.results.addAll(courses);
+        //call update results
+        updateResults();
     }
 
     /**
@@ -27,11 +30,6 @@ public class Search {
      */
 
     public ArrayList<Course> getResults() {
-        ArrayList<String> profs = new ArrayList<>();
-        profs.add("Dr. Brown");
-        ArrayList<Time> time = new ArrayList<>();
-        time.add(new Time("MWF", 9,10));
-        results.add(new Course("Algebra", "MATH 101","A", "Math", profs, time, "F25","HAL 114", 3, "Learn algebra"));
         return results;
     }
 
@@ -66,6 +64,33 @@ public class Search {
      * @return
      */
     public ArrayList<Course> updateResults(){
-        return null;
+        ArrayList<Course> updated = new ArrayList<Course>();
+        for(Course course : results) {
+            //check if each course matches the query
+            if (matchesQuery(course)) {
+                updated.add(course);
+            }
+        }
+        results = updated;
+        return results;
     }
+
+    /**
+     * Helper function to check if a course matches the query of the search, currently on the basis of course name, course code, or professors
+     * @param course
+     * @return true or false depending on if it matches the query
+     */
+    private boolean matchesQuery(Course course) {
+        if (query == null || query.isBlank()) {
+            return true;
+        }
+
+        String q = query.toLowerCase();
+        //check all possible parameters that the query could match
+        return course.getName().toLowerCase().contains(q)
+                || course.getCourseCode().toLowerCase().contains(q)
+                || course.getProfessors().contains(q);
+    }
+
+
 }
