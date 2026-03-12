@@ -52,12 +52,13 @@ public class Main {
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add(staticFiles -> {
-                staticFiles.directory = "../frontend/pages";
+                staticFiles.directory = "frontend";
                 staticFiles.location = Location.EXTERNAL;
             });
         }).start(7000);
 
         CalendarViewController.registerRoutes(app);
+        SearchController.registerRoutes(app);
     }
 
     /**

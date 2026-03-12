@@ -2,19 +2,88 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Search</title>
-</head>
-<body>
-    <P>My Search</P>
-</body>
-<script>
-    /* ---------- GET /items ---------- */
+    <title>Course Search</title>
 
-    async function loadSearch() {
-        const res = await fetch("/search");
-        const search = await res.json();
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        .course {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>Course Search</h1>
+
+<input
+        type="text"
+        id="searchInput"
+        placeholder="Search courses..."
+>
+
+<button onclick="searchCourses()">Search</button>
+
+<div id="results"></div>
+
+<script>
+
+    async function searchCourses() {
+
+        const query = document.getElementById("searchInput").value;
+
+        const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+
+        const courses = await response.json();
+
+        displayResults(courses);
     }
 
-    loadSearch();
+
+    function displayResults(courses) {
+
+        const resultsDiv = document.getElementById("results");
+
+        resultsDiv.innerHTML = "";
+
+        if (courses.length === 0) {
+            resultsDiv.innerHTML = "<p>No courses found</p>";
+            return;
+        }
+
+        courses.forEach(course => {
+
+            const div = document.createElement("div");
+            div.className = "course";
+
+            div.innerHTML = `
+                <strong>${course.courseCode} - ${course.name}</strong> (Section ${course.section})<br>
+                Department: ${course.department}<br>
+                Professors: ${course.professors.join(", ")}<br>
+                Semester: ${course.semester}<br>
+                Location: ${course.location}<br>
+                Credits: ${course.credits}<br>
+                Description: ${course.description}<br>
+                Times: ${course.times.map(t => `${t.day} ${t.start}-${t.end}`).join(", ")}
+            `;
+
+            resultsDiv.appendChild(div);
+
+        });
+    }
+
 </script>
+
+</body>
 </html>
