@@ -48,6 +48,13 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
+        // example code for how to use a search without filters
+//        Search testSearch = new Search("COMP", new ArrayList<Filter>(), courses);
+//        for (Course course : testSearch.getResults()) {
+//            System.out.println(course.getName());
+//            System.out.println(course.getCourseCode());
+//        }
+
 
 
         Javalin app = Javalin.create(config -> {
