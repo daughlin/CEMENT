@@ -19,7 +19,7 @@ public class SearchController {
 
             String query = ctx.queryParam("q");
 
-            Search newSearch = new Search(query, new ArrayList<>());
+            Search newSearch = new Search(query, new ArrayList<>(), new ArrayList<>());
 
             List<Course> results = newSearch.getResults();
 
