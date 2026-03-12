@@ -18,7 +18,7 @@ public class Search {
     public Search(String query, ArrayList<Filter> filters){
         this.query = query;
         this.filters = filters;
-
+        this.results = new ArrayList<>();
     }
 
     /**
@@ -27,6 +27,11 @@ public class Search {
      */
 
     public ArrayList<Course> getResults() {
+        ArrayList<String> profs = new ArrayList<>();
+        profs.add("Dr. Brown");
+        ArrayList<Time> time = new ArrayList<>();
+        time.add(new Time("MWF", 9,10));
+        results.add(new Course("Algebra", "MATH 101","A", "Math", profs, time, "F25","HAL 114", 3, "Learn algebra"));
         return results;
     }
 
