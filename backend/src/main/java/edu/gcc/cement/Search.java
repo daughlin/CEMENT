@@ -113,7 +113,7 @@ public class Search {
                 case DEPT:
                     //System.out.println(filter.getValue() + " vs " + course.getDepartment());
                     //System.out.println(!(course.getDepartment().contains(filter.getValue())));
-                    if (!(course.getDepartment().contains(filter.getValue()))) {
+                    if (!(course.getDepartment().equalsIgnoreCase(filter.getValue()))) {
                         return false;
                     }
                     break;
@@ -121,8 +121,10 @@ public class Search {
                     //System.out.println("prof");
                     boolean counts = false;
                     for (String prof : course.getProfessors()) {
-                        if ((prof.equals(filter.getValue()))) {
+                        //System.out.println(prof + " vs " + filter.getValue());
+                        if ((prof.toLowerCase().contains(filter.getValue().toLowerCase()))) {
                             counts =  true;
+                            break;
                         }
                     }
                     if (!counts) {
@@ -138,7 +140,7 @@ public class Search {
                     //come back to this
                 case CREDITS:
                     //System.out.println("credits");
-                    if (!(("" + course.getCredits()).equals(filter.getValue()))) {
+                    if (!(("" + course.getCredits()).equalsIgnoreCase(filter.getValue()))) {
                         return false;
                     }
                     break;

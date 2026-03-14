@@ -53,10 +53,13 @@ public class Main {
         ArrayList<Filter> filters = new ArrayList<Filter>();
         filters.add(new Filter("1", Type.CREDITS));
         filters.add(new Filter("COMP", Type.DEPT));
+        filters.add(new Filter("dickinson", Type.PROF));
         Search testSearch = new Search("comp", filters, courses);
         for (Course course : testSearch.getResults()) {
             System.out.println(course.getName());
             System.out.println(course.getCourseCode());
+            System.out.println(course.getProfessors().getFirst());
+            System.out.println("--------------------");
         }
 
 
