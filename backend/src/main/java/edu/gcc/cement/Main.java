@@ -47,11 +47,10 @@ public class Main {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println(courses.get(10).getProfessors().get(0));
 
         // example code for how to use a search without filters
         // use "n credit(s)" format to search by credits
-//        Search testSearch = new Search("3 credits", new ArrayList<Filter>(), courses);
+//        Search testSearch = new Search("fuller", new ArrayList<Filter>(), courses);
 //        for (Course course : testSearch.getResults()) {
 //            System.out.println(course.getName());
 //            System.out.println(course.getCourseCode());
