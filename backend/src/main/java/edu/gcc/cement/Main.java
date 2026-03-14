@@ -48,24 +48,27 @@ public class Main {
             System.out.println(e.getMessage());
         }
 
-        // example code for how to use a search without filters
+        // example code for how to use a search with filters
         // use "n credit(s)" format to search by credits
-//        Search testSearch = new Search("fuller", new ArrayList<Filter>(), courses);
-//        for (Course course : testSearch.getResults()) {
-//            System.out.println(course.getName());
-//            System.out.println(course.getCourseCode());
-//        }
+        ArrayList<Filter> filters = new ArrayList<Filter>();
+        filters.add(new Filter("1", Type.CREDITS));
+        filters.add(new Filter("COMP", Type.DEPT));
+        Search testSearch = new Search("comp", filters, courses);
+        for (Course course : testSearch.getResults()) {
+            System.out.println(course.getName());
+            System.out.println(course.getCourseCode());
+        }
 
 
 
-        Javalin app = Javalin.create(config -> {
-            config.staticFiles.add(staticFiles -> {
-                staticFiles.directory = "../frontend/pages";
-                staticFiles.location = Location.EXTERNAL;
-            });
-        }).start(7000);
-
-        CalendarViewController.registerRoutes(app);
+//        Javalin app = Javalin.create(config -> {
+//            config.staticFiles.add(staticFiles -> {
+//                staticFiles.directory = "../frontend/pages";
+//                staticFiles.location = Location.EXTERNAL;
+//            });
+//        }).start(7000);
+//
+//        CalendarViewController.registerRoutes(app);
     }
 
     /**

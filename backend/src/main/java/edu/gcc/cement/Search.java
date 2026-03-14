@@ -43,6 +43,7 @@ public class Search {
 
     public void setQuery(String query) {
         this.query = query;
+        updateResults();
     }
 
     /**
@@ -50,6 +51,8 @@ public class Search {
      * @param filter
      */
     public void addFilter(Filter filter){
+        this.filters.add(filter);
+        updateResults();
     }
 
     /**
@@ -57,17 +60,19 @@ public class Search {
      * @param filter
      */
     public void removeFilter(Filter filter){
+        this.filters.remove(filter);
+        updateResults();
     }
 
     /**
      * Update the results
      * @return
      */
-    public ArrayList<Course> updateResults(){
+    private ArrayList<Course> updateResults(){
         ArrayList<Course> updated = new ArrayList<Course>();
         for(Course course : results) {
-            //check if each course matches the query
-            if (matchesQuery(course)) {
+            //check if each course matches the query and filters
+            if (matchesQuery(course) && matchesFilters(course)) {
                 updated.add(course);
             }
         }
@@ -101,28 +106,47 @@ public class Search {
 
     }
 
-//    private boolean matchesFilters(Course course) {
-//        for (Filter filter : filters) {
-//            switch(filter.getType()) {
-//                case DEPT:
-//                    if (!(course.getDepartment().equals(filter.getValue()))) {
-//                        return false;
-//                    }
-//                case PROF:
-//                    for (String prof : course.getProfessors()) {
-//                        if ((prof.equals(filter.getValue()))) {
-//                            return true;
-//                        }
-//                    }
-//                    return false;
-//                case TIME:
+    private boolean matchesFilters(Course course) {
+        for (Filter filter : filters) {
+            //System.out.println("Checking " + filter.getValue());
+            switch(filter.getType()) {
+                case DEPT:
+                    //System.out.println(filter.getValue() + " vs " + course.getDepartment());
+                    //System.out.println(!(course.getDepartment().contains(filter.getValue())));
+                    if (!(course.getDepartment().contains(filter.getValue()))) {
+                        return false;
+                    }
+                    break;
+                case PROF:
+                    //System.out.println("prof");
+                    boolean counts = false;
+                    for (String prof : course.getProfessors()) {
+                        if ((prof.equals(filter.getValue()))) {
+                            counts =  true;
+                        }
+                    }
+                    if (!counts) {
+                        return false;
+                    }
+                    break;
+                case TIME:
+                    //waiting on max's time comparison functionality
 //                    for (Time time : course.getTimes()) {
 //
 //                    }
-//            }
-//        }
-//
-//    }
+                case DAYS:
+                    //come back to this
+                case CREDITS:
+                    //System.out.println("credits");
+                    if (!(("" + course.getCredits()).equals(filter.getValue()))) {
+                        return false;
+                    }
+                    break;
+                default:
+            }
+        }
+        return true;
+    }
 
 
 }
