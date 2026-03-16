@@ -13,7 +13,8 @@ public class CalendarViewController {
             ctx.redirect("/CalendarView.html");
         });
 
-        //added these for the example course vvv
+        //added these for the example course
+        //THESE WILL BE REMOVED WHEN WE ADD A DATABASE
 
         Time time1 = new Time("T", 9*60, 10*60); //*60 to convert to minutes
         Time time2 = new Time("R", 9*60, 10*60);
@@ -34,11 +35,11 @@ public class CalendarViewController {
         professors.add("Graybill, Keith B.");
 
 
-        //Schedule schedule = new Schedule("Fall");
-        //schedule.addCourse("ACCT 201");
-
 
         //THIS IS HOW IT SHOULD WORK WHEN WE HAVE A DATABASE
+
+        //Schedule schedule = new Schedule("Fall");
+
 //        app.get("/api/schedule", ctx -> {
 //            try {
 //                ctx.json(schedule.getCourses());
@@ -49,6 +50,7 @@ public class CalendarViewController {
 //        });
 
         //example courses to send to the calendar since we don't have a database
+        //ALL HARD CODED THINGS WILL BE REMOVED ONCE WE HAVE A DATABASE
 
         Course course1 = new Course("PRINCIPLES OF ACCOUNTING I", "ACCT 201", "A", "ACCT", professors, times1, "2023_Fall", "SHAL 316", 3, "");
         Course course2 = new Course("Comp Sci Class", "COMP 240", "B", "COMP", professors, times2, "2023_Fall", "STEM 100", 3, "");
