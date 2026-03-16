@@ -42,17 +42,18 @@ public class Schedule {
 
     /**
      * add a course
-     * @param course
+     * @param c
      */
-    public void addCourse(Course course){
-        this.courses.add(course);
+    public void addCourse(Course c){
+        courses.add(c);
     }
 
     /**
      * remove a course
-     * @param courseID
+     * @param c
      */
-    public void removeCourse(String courseID){
+    public void removeCourse(Course c){
+        courses.remove(c);
     }
 
 

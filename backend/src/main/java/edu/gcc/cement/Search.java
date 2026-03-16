@@ -110,7 +110,7 @@ public class Search {
     }
 
     /**
-     * Helper function to check if a course matches the query of the search, currently on the basis of course name, course code, or professors
+     * Helper function to check if a course matches the query of the search, currently on the basis of course name, course code, course time, or professors
      * @param course
      * @return true or false depending on if it matches the query
      */
@@ -120,6 +120,17 @@ public class Search {
         }
 
         String q = query.toLowerCase();
+
+//        for (Time time : course.getTimes()) {
+//            if(time.getDay().contains(q)) {
+//                return true;
+//            } else if (time.getStartTime()){
+//                // should compare the string of the start/end time (stored as an int) with
+//                // the start/end time of the course in both of two ways:
+//                // 1. are the start/end times identical?
+//                // 2. are the start/end times of the course after the time in the query
+//            }
+//        }
 
         for (String prof : course.getProfessors()) {
             if (prof.toLowerCase().contains(q)) {
@@ -162,11 +173,13 @@ public class Search {
                     break;
                 case TIME:
                     //waiting on max's time comparison functionality
-//                    for (Time time : course.getTimes()) {
-//
-//                    }
+                    //for (Time time : course.getTimes()) {
+                        //you got this bro o7
+                    //}
                 case DAYS:
                     //come back to this
+                    // it can be done o7
+
                 case CREDITS:
                     //System.out.println("credits");
                     if (!(("" + course.getCredits()).equalsIgnoreCase(filter.getValue()))) {
