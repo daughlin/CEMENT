@@ -2,6 +2,8 @@ package edu.gcc.cement;
 
 import java.util.ArrayList;
 
+
+
 public class Schedule {
 
     private ArrayList<Course> courses;
@@ -44,7 +46,21 @@ public class Schedule {
      * add a course
      * @param c
      */
-    public void addCourse(Course c){
+    public void addCourse(Course c) throws CourseTimeConflictsException {
+        for (Course existingCourse : courses) {
+            for (Time existingTime : existingCourse.getTimes()) {
+                for (Time newTime : c.getTimes()) {
+                    if (timesOverlap(existingTime, newTime)) {
+                        throw new CourseTimeConflictsException(
+                                "Course " + c.getCourseCode() +
+                                        " conflicts with " + existingCourse.getCourseCode() +
+                                        " on " + newTime.getDay()
+                        );
+                    }
+                }
+            }
+        }
+
         courses.add(c);
     }
 
@@ -54,6 +70,15 @@ public class Schedule {
      */
     public void removeCourse(Course c){
         courses.remove(c);
+    }
+
+    private boolean timesOverlap(Time t1, Time t2) {
+        if (!t1.getDay().equalsIgnoreCase(t2.getDay())) {
+            return false;
+        }
+
+        return t1.getStartTime() < t2.getEndTime()
+                && t1.getEndTime() > t2.getStartTime();
     }
 
 
