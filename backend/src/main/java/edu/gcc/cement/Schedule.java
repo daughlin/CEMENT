@@ -32,9 +32,10 @@ public class Schedule {
 
     /**
      * add a course
-     * @param courseID
+     * @param c
      */
-    public void addCourse(String courseID){
+    public void addCourse(Course c){
+        courses.add(c);
     }
 
     /**
