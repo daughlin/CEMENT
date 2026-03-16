@@ -57,6 +57,7 @@ public class SearchController {
             HashSet<String> professors = new HashSet<>();
             HashSet<Integer> credits = new HashSet<>();
             HashSet<String> days = new HashSet<>();
+            HashSet<String> times = new HashSet<>();
 
             for (Course c : courses) {
 
@@ -69,6 +70,9 @@ public class SearchController {
 
                 for (Time t : c.getTimes()) {
                     days.add(t.getDay());
+
+                    String timeSlot = t.getStartTime() + "-" + t.getEndTime();
+                    times.add(timeSlot);
                 }
             }
 
@@ -78,6 +82,7 @@ public class SearchController {
             data.put("professors", professors);
             data.put("credits", credits);
             data.put("days", days);
+            data.put("times", times);
 
             ctx.json(data);
         });
