@@ -1,31 +1,52 @@
 package edu.gcc.cement;
 
 import io.javalin.Javalin;
-
 import java.util.*;
 
 public class SearchController {
 
     public static void registerRoutes(Javalin app) {
 
-        // load the search page
+        // Load the search page
         app.get("/search", ctx -> {
             ctx.redirect("/pages/Search.html");
         });
 
-        // search API
+        // SEARCH API (handles query + filters)
         app.get("/api/search", ctx -> {
 
             String query = ctx.queryParam("q");
 
-            Search newSearch = new Search(query, new ArrayList<>());
+            ArrayList<Filter> filters = new ArrayList<>();
 
-            ArrayList<Course> results = newSearch.getResults();
+            String dept = ctx.queryParam("dept");
+            if (dept != null && !dept.isBlank()) {
+                filters.add(new Filter(dept, Type.DEPT));
+            }
+
+            String prof = ctx.queryParam("prof");
+            if (prof != null && !prof.isBlank()) {
+                filters.add(new Filter(prof, Type.PROF));
+            }
+
+            String credits = ctx.queryParam("credits");
+            if (credits != null && !credits.isBlank()) {
+                filters.add(new Filter(credits, Type.CREDITS));
+            }
+
+            String days = ctx.queryParam("days");
+            if (days != null && !days.isBlank()) {
+                filters.add(new Filter(days, Type.DAYS));
+            }
+
+            Search search = new Search(query, filters);
+
+            ArrayList<Course> results = search.getResults();
 
             ctx.json(results);
-
         });
 
+        // FILTER OPTIONS API (dynamic dropdowns)
         app.get("/api/filters", ctx -> {
 
             Search search = new Search("", new ArrayList<>());
@@ -57,28 +78,6 @@ public class SearchController {
             data.put("professors", professors);
             data.put("credits", credits);
             data.put("days", days);
-
-            ArrayList<Filter> filters = new ArrayList<>();
-
-            String dept = ctx.queryParam("dept");
-            if (dept != null && !dept.isBlank()) {
-                filters.add(new Filter(dept, Type.DEPT));
-            }
-
-            String prof = ctx.queryParam("prof");
-            if (prof != null && !prof.isBlank()) {
-                filters.add(new Filter(prof, Type.PROF));
-            }
-
-            String creds = ctx.queryParam("creds");
-            if (creds != null && !prof.isBlank()) {
-                filters.add(new Filter(creds, Type.CREDITS));
-            }
-
-            String day = ctx.queryParam("days");
-            if (day != null && !day.isBlank()) {
-                filters.add(new Filter(day, Type.DAYS));
-            }
 
             ctx.json(data);
         });

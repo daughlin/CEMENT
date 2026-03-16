@@ -102,7 +102,6 @@
 
         const dept = document.getElementById("deptFilter").value;
         const prof = document.getElementById("profFilter").value;
-        const time = document.getElementById("timeFilter").value;
         const days = document.getElementById("daysFilter").value;
         const credits = document.getElementById("creditsFilter").value;
 
@@ -110,7 +109,6 @@
             q: query,
             dept: dept,
             prof: prof,
-            time: time,
             days: days,
             credits: credits
         });
@@ -154,6 +152,12 @@
 
         });
     }
+
+    document.getElementById("searchInput")
+        .addEventListener("input", searchCourses);
+
+    document.querySelectorAll("select")
+        .forEach(s => s.addEventListener("change", searchCourses));
 
     loadFilters();
 
