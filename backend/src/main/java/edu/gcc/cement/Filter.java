@@ -1,15 +1,19 @@
 package edu.gcc.cement;
 
+enum Type {
+    DEPT, PROF, TIME, DAYS, CREDITS;
+}
+
 public class Filter {
     private String value;
-    private String type;
+    private Type type;
 
     /**
      * Constructor
      * @param value
      * @param type
      */
-    public Filter(String value, String type){
+    public Filter(String value, Type type){
         this.value = value;
         this.type = type;
     }
@@ -25,7 +29,7 @@ public class Filter {
         this.value = value;
     }
 
-    public String getType() {
+    public Type getType() {
         return type;
     }
 }
