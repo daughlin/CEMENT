@@ -7,12 +7,22 @@ public class Schedule {
     private ArrayList<Course> courses;
     private String semester;
 
+    public Schedule() {
+        this.courses = new ArrayList<>();
+    }
+
     /**
      * Constructor
      * @param semester
      */
     public Schedule(String semester){
         this.semester = semester;
+    }
+
+    public Schedule(String semester, ArrayList<Course> courses) {
+        this.semester = semester;
+        this.courses = new ArrayList<Course>();
+        this.courses.addAll(courses);
     }
 
     /**
@@ -32,9 +42,10 @@ public class Schedule {
 
     /**
      * add a course
-     * @param courseID
+     * @param course
      */
-    public void addCourse(String courseID){
+    public void addCourse(Course course){
+        this.courses.add(course);
     }
 
     /**
