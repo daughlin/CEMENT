@@ -151,6 +151,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
+    //This should most likely be in the backend instead of the front end.
+    //Leaving this here for right now until we make a finalized
+    //decision on the format of time in the database
+
     function minutesToTime(minutes) {
         const h = Math.floor(minutes / 60);
         const m = minutes % 60;
