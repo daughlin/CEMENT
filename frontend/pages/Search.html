@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Search</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        #filters {
+            margin-top: 15px;
+        }
+
+        #filters select {
+            margin-right: 10px;
+            padding: 5px;
+        }
+
+        #results {
+            margin-top: 20px;
+        }
+
+        .course {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h1>Course Search</h1>
+
+<input
+        type="text"
+        id="searchInput"
+        placeholder="Search courses..."
+>
+
+<button onclick="searchCourses()">Search</button>
+
+<div id="filters">
+
+    <select id="deptFilter">
+        <option value="">Department</option>
+    </select>
+
+    <select id="profFilter">
+        <option value="">Professor</option>
+    </select>
+
+    <select id="creditsFilter">
+        <option value="">Credits</option>
+    </select>
+
+    <select id="daysFilter">
+        <option value="">Days</option>
+    </select>
+
+</div>
+
+<div id="results"></div>
+
+<script>
+
+    async function loadFilters() {
+
+        const response = await fetch("/api/filters");
+        const data = await response.json();
+
+        populateDropdown("deptFilter", data.departments);
+        populateDropdown("profFilter", data.professors);
+        populateDropdown("creditsFilter", data.credits);
+        populateDropdown("daysFilter", data.days);
+    }
+
+    function populateDropdown(id, values) {
+
+    const select = document.getElementById(id);
+
+    values.sort();
+
+    values.forEach(v => {
+
+        const option = document.createElement("option");
+        option.value = v;
+        option.textContent = v;
+
+        select.appendChild(option);
+
+    });
+}
+
+    async function searchCourses() {
+
+        const query = document.getElementById("searchInput").value;
+
+        const dept = document.getElementById("deptFilter").value;
+        const prof = document.getElementById("profFilter").value;
+        const time = document.getElementById("timeFilter").value;
+        const days = document.getElementById("daysFilter").value;
+        const credits = document.getElementById("creditsFilter").value;
+
+        const params = new URLSearchParams({
+            q: query,
+            dept: dept,
+            prof: prof,
+            time: time,
+            days: days,
+            credits: credits
+        });
+
+        const response = await fetch(`/api/search?${params}`);
+
+        const courses = await response.json();
+
+        displayResults(courses);
+    }
+
+
+    function displayResults(courses) {
+
+        const resultsDiv = document.getElementById("results");
+
+        resultsDiv.innerHTML = "";
+
+        if (courses.length === 0) {
+            resultsDiv.innerHTML = "<p>No courses found</p>";
+            return;
+        }
+
+        courses.forEach(course => {
+
+            const div = document.createElement("div");
+            div.className = "course";
+
+            div.innerHTML = `
+                <strong>${course.courseCode} - ${course.name}</strong> (Section ${course.section})<br>
+                Department: ${course.department}<br>
+                Professors: ${course.professors.join(", ")}<br>
+                Semester: ${course.semester}<br>
+                Location: ${course.location}<br>
+                Credits: ${course.credits}<br>
+                Description: ${course.description}<br>
+                Times: ${course.times.map(t => `${t.day} ${t.start}-${t.end}`).join(", ")}
+            `;
+
+            resultsDiv.appendChild(div);
+
+        });
+    }
+
+    loadFilters();
+
+</script>
+
+</body>
+</html>
