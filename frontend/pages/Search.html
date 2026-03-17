@@ -149,8 +149,7 @@
                 Semester: ${course.semester}<br>
                 Location: ${course.location}<br>
                 Credits: ${course.credits}<br>
-                Description: ${course.description}<br>
-                Times: ${course.times.map(t => `${t.day} ${t.start}-${t.end}`).join(", ")}<br><br>
+                Times: ${course.times.map(t => `${t.day} ${t.startTime}-${t.endTime}`).join(", ")}<br><br>
 
                 <button onclick='addCourse(this, ${JSON.stringify(course)})'>
                     Add course
@@ -164,7 +163,6 @@
 
     async function addCourse(button, course) {
 
-        console.log(course);
         const response = await fetch("/api/add-course", {
             method: "POST",
             headers: {
