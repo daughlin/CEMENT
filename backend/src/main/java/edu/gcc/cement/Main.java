@@ -14,15 +14,18 @@ import io.javalin.http.staticfiles.Location;
 
 public class Main {
     public static void main(String[] args) {
+
+        // example code for how to load a saved schedule
 //        Schedule schedule = ScheduleStorage.loadSchedule();
-//            System.out.println("Current Schedule:");
+//        System.out.println("Current Schedule:");
+//        System.out.println("--------------------");
+//        for (Course course : schedule.getCourses()) {
+//            System.out.println(course.getName());
+//            System.out.println(course.getCourseCode());
+//            System.out.println(course.getProfessors().getFirst());
 //            System.out.println("--------------------");
-//            for (Course course : schedule.getCourses()) {
-//                System.out.println(course.getName());
-//                System.out.println(course.getCourseCode());
-//                System.out.println(course.getProfessors().getFirst());
-//                System.out.println("--------------------");
-//            }
+//        }
+
             // example code for how to use a search with filters
             // use "n credit(s)" format to search by credits
 //            ArrayList<Filter> filters = new ArrayList<Filter>();
@@ -38,6 +41,9 @@ public class Main {
 //                    System.out.println(course.getProfessors().getFirst());
 //                    System.out.println(course.getCredits() + " credit(s)");
 //                    System.out.println("--------------------");
+
+                    // adding everything in search results to saved schedule as example
+                    // call ScheduleStorage.saveSchedule(schedule) every time something is added or removed from the schedule
 //                    schedule.addCourse(course);
 //                    ScheduleStorage.saveSchedule(schedule);
 //                }
