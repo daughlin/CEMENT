@@ -52,15 +52,12 @@ public class Schedule {
                 for (Time newTime : c.getTimes()) {
                     if (timesOverlap(existingTime, newTime)) {
                         throw new CourseTimeConflictsException(
-                                "Course " + c.getCourseCode() +
-                                        " conflicts with " + existingCourse.getCourseCode() +
-                                        " on " + newTime.getDay()
+                                buildConflictMessage(c, newTime, existingCourse, existingTime)
                         );
                     }
                 }
             }
         }
-
         courses.add(c);
     }
 
@@ -79,6 +76,33 @@ public class Schedule {
 
         return t1.getStartTime() < t2.getEndTime()
                 && t1.getEndTime() > t2.getStartTime();
+    }
+
+    private String buildConflictMessage(Course newCourse, Time newTime,
+                                        Course existingCourse, Time existingTime) {
+        return "Course " + newCourse.getCourseCode()
+                + " conflicts with " + existingCourse.getCourseCode()
+                + " on " + newTime.getDay()
+                + " from " + formatTimeRange(newTime)
+                + ". Existing course meets from " + formatTimeRange(existingTime) + ".";
+    }
+
+    private String formatTimeRange(Time t) {
+        return formatMinutes(t.getStartTime()) + " - " + formatMinutes(t.getEndTime());
+    }
+
+    private String formatMinutes(int minutesFromMidnight) {
+        int hour24 = minutesFromMidnight / 60;
+        int minutes = minutesFromMidnight % 60;
+
+        String period = (hour24 < 12) ? "AM" : "PM";
+
+        int hour12 = hour24 % 12;
+        if (hour12 == 0) {
+            hour12 = 12;
+        }
+
+        return String.format("%d:%02d %s", hour12, minutes, period);
     }
 
 
