@@ -192,7 +192,7 @@ public class Search {
         return true;
     }
 
-    private void readCourses() {
+    private void readCourses() throws IOException {
         this.courseList = new ArrayList<Course>();
         ArrayList<Course> courses = new ArrayList<Course>();
 

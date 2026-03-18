@@ -15,7 +15,10 @@ private int credits;
 private String description;
 
 
-
+    public Course() {
+        professors = new ArrayList<String>();
+        times = new ArrayList<Time>();
+    }
     /**Constructor
      * @param name
      * @param courseCode
@@ -49,17 +52,22 @@ private String description;
      */
     public String getName() {return name;}
     public String getCourseCode() {return courseCode;}
-    public void setCourseCode(String courseCode) {}
+    public void setCourseCode(String courseCode) {
+        this.courseCode = courseCode;
+    }
     public String getSection() {return section;}
     public void setSection(String section) {}
     public String getDepartment() {return department;}
     public void setDepartment(String department) {department = department;}
     public ArrayList<String> getProfessors() {return professors;}
-    public void setProfessors(String professors) {
-        professors = professors;}
+    public void addProfessor(ArrayList<String> professors) {
+        this.professors = professors;}
 
     public ArrayList<Time> getTimes() {
         return times;
+    }
+    public void setTimes(ArrayList<Time> times) {
+        this.times = times;
     }
 
     public String getSemester() {return semester;}
