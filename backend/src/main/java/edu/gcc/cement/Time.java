@@ -5,6 +5,10 @@ public class Time {
     private int startTime;
     private int endTime;
 
+    public Time() {
+
+    }
+
     public Time(String day, int startTime, int endTime) {
         this.day = day;
         this.startTime = startTime;

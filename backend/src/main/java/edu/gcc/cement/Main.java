@@ -14,27 +14,36 @@ import io.javalin.http.staticfiles.Location;
 
 public class Main {
     public static void main(String[] args) {
-
-        // example code for how to use a search with filters
-        // use "n credit(s)" format to search by credits
-//        ArrayList<Filter> filters = new ArrayList<Filter>();
-//        filters.add(new Filter("3", Type.CREDITS));
-//        filters.add(new Filter("reli", Type.DEPT));
-//        filters.add(new Filter("ansberry", Type.PROF));
-//        try {
-//            Search testSearch = new Search("", filters);
+//        Schedule schedule = ScheduleStorage.loadSchedule();
+//            System.out.println("Current Schedule:");
 //            System.out.println("--------------------");
-//            for (Course course : testSearch.getResults()) {
+//            for (Course course : schedule.getCourses()) {
 //                System.out.println(course.getName());
 //                System.out.println(course.getCourseCode());
 //                System.out.println(course.getProfessors().getFirst());
-//                System.out.println(course.getCredits() + " credit(s)");
 //                System.out.println("--------------------");
 //            }
-//        } catch ( Exception e) {
-//            System.out.println(e.getMessage());
-//        }
-
+            // example code for how to use a search with filters
+            // use "n credit(s)" format to search by credits
+//            ArrayList<Filter> filters = new ArrayList<Filter>();
+//            filters.add(new Filter("3", Type.CREDITS));
+//            filters.add(new Filter("reli", Type.DEPT));
+//            filters.add(new Filter("ansberry", Type.PROF));
+//            try {
+//                Search testSearch = new Search("", filters);
+//                System.out.println("--------------------");
+//                for (Course course : testSearch.getResults()) {
+//                    System.out.println(course.getName());
+//                    System.out.println(course.getCourseCode());
+//                    System.out.println(course.getProfessors().getFirst());
+//                    System.out.println(course.getCredits() + " credit(s)");
+//                    System.out.println("--------------------");
+//                    schedule.addCourse(course);
+//                    ScheduleStorage.saveSchedule(schedule);
+//                }
+//            } catch (Exception e) {
+//                System.out.println(e.getMessage());
+//            }
 
         Javalin app = Javalin.create(config -> {
             config.staticFiles.add(staticFiles -> {
