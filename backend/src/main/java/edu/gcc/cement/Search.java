@@ -22,7 +22,7 @@ public class Search {
      * @param filters
      */
     public Search(String query, ArrayList<Filter> filters, ArrayList<Course> courses){
-        this.query = query.split("+");
+        this.query = query.split(" ");
         this.filters = filters;
         this.results = new ArrayList<Course>();
         this.courseList = new ArrayList<Course>();
