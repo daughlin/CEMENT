@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class Search {
 
-    private String query;
+    private String[] query;
     private ArrayList<Filter> filters;
     private ArrayList<Course> courseList;
     private ArrayList<Course> results;
@@ -22,7 +22,7 @@ public class Search {
      * @param filters
      */
     public Search(String query, ArrayList<Filter> filters, ArrayList<Course> courses){
-        this.query = query;
+        this.query = query.split("+");
         this.filters = filters;
         this.results = new ArrayList<Course>();
         this.courseList = new ArrayList<Course>();
@@ -38,7 +38,7 @@ public class Search {
      * @param filters
      */
     public Search(String query, ArrayList<Filter> filters) throws Exception{
-        this.query = query;
+        this.query = query.split(" ");
         this.filters = filters;
         this.results = new ArrayList<Course>();
         readCourses();
@@ -60,7 +60,11 @@ public class Search {
     }
 
     public String getQuery() {
-        return query;
+        String ret = "";
+        for (String s : query) {
+            ret = ret.concat(s);
+        }
+        return ret;
     }
 
     public ArrayList<Filter> getFilters() {
@@ -68,7 +72,7 @@ public class Search {
     }
 
     public void setQuery(String query) {
-        this.query = query;
+        this.query = query.split(" ");
         updateResults();
     }
 
@@ -115,35 +119,19 @@ public class Search {
      * @return true or false depending on if it matches the query
      */
     private boolean matchesQuery(Course course) {
-        if (query == null || query.isBlank()) {
+        if (query == null || query.length == 0) {
             return true;
         }
 
-        String q = query.toLowerCase();
+        String match = (course.getCourseCode() + " " + course.getName() + " " + course.getProfessors().get(0) + " " + course.getCredits() + " credits ").toLowerCase();
 
-//        for (Time time : course.getTimes()) {
-//            if(time.getDay().contains(q)) {
-//                return true;
-//            } else if (time.getStartTime()){
-//                // should compare the string of the start/end time (stored as an int) with
-//                // the start/end time of the course in both of two ways:
-//                // 1. are the start/end times identical?
-//                // 2. are the start/end times of the course after the time in the query
-//            }
-//        }
-
-        for (String prof : course.getProfessors()) {
-            if (prof.toLowerCase().contains(q)) {
-                return true;
+        for (String q : query) {
+            if (!match.contains(q)) {
+                return false;
             }
         }
-        //check all possible parameters that the query could match
-        return course.getName().toLowerCase().contains(q)
-                || course.getCourseCode().toLowerCase().contains(q)
-                || q.equals("" + course.getCredits() + " credits")
-                || q.equals("" + course.getCredits() + " credit");
 
-
+        return true;
     }
 
     private boolean matchesFilters(Course course) {
