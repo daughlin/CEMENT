@@ -29,14 +29,18 @@ public class SearchController {
                 filters.add(new Filter(prof, Type.PROF));
             }
 
-            String credits = ctx.queryParam("credits");
-            if (credits != null && !credits.isBlank()) {
-                filters.add(new Filter(credits, Type.CREDITS));
+            String daysParam = ctx.queryParam("days");
+            if (daysParam != null && !daysParam.isBlank()) {
+                for (String d : daysParam.split(",")) {
+                    filters.add(new Filter(d, Type.DAYS));
+                }
             }
 
-            String days = ctx.queryParam("days");
-            if (days != null && !days.isBlank()) {
-                filters.add(new Filter(days, Type.DAYS));
+            String timeParam = ctx.queryParam("times");
+            if (timeParam != null && !timeParam.isBlank()) {
+                for (String t : timeParam.split(",")) {
+                    filters.add(new Filter(t, Type.TIME));
+                }
             }
 
             Search search = new Search(query, filters);
@@ -55,9 +59,10 @@ public class SearchController {
 
             HashSet<String> departments = new HashSet<>();
             HashSet<String> professors = new HashSet<>();
-            HashSet<Integer> credits = new HashSet<>();
+            TreeSet<Integer> credits = new TreeSet<>();
             HashSet<String> days = new HashSet<>();
-            HashSet<String> times = new HashSet<>();
+            Set<Integer> startTimes = new TreeSet<>();
+            Set<Integer> endTimes = new TreeSet<>();
 
             for (Course c : courses) {
 
@@ -71,8 +76,8 @@ public class SearchController {
                 for (Time t : c.getTimes()) {
                     days.add(t.getDay());
 
-                    String timeSlot = t.getStartTime() + "-" + t.getEndTime();
-                    times.add(timeSlot);
+                    startTimes.add(t.getStartTime());
+                    endTimes.add(t.getEndTime());
                 }
             }
 
@@ -82,7 +87,8 @@ public class SearchController {
             data.put("professors", professors);
             data.put("credits", credits);
             data.put("days", days);
-            data.put("times", times);
+            data.put("startTimes", startTimes);
+            data.put("endTimes", endTimes);
 
             ctx.json(data);
         });
