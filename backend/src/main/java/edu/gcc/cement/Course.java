@@ -51,7 +51,7 @@ private String description;
      *Getters and Setters
      */
     public String getName() {return name;}
-    public String setName(String name) {this.name = name;}
+    public void setName(String name) {this.name = name;}
     public String getCourseCode() {return courseCode;}
     public void setCourseCode(String courseCode) {
         this.courseCode = courseCode;
