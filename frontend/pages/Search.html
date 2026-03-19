@@ -58,13 +58,22 @@
         <option value="">Credits</option>
     </select>
 
-    <select id="daysFilter">
-        <option value="">Days</option>
+    <select id="startTimeFilter">
+        <option value="">Starts at/after...</option>
     </select>
 
-    <select id="timeFilter">
-        <option value="">Time</option>
+    <select id="endTimeFilter">
+        <option value="">Ends before...</option>
     </select>
+
+    <br><br>
+
+    <strong>Days:</strong><br>
+    <label><input type="checkbox" class="dayFilter" value="M"> Monday</label><br>
+    <label><input type="checkbox" class="dayFilter" value="T"> Tuesday</label><br>
+    <label><input type="checkbox" class="dayFilter" value="W"> Wednesday</label><br>
+    <label><input type="checkbox" class="dayFilter" value="R"> Thursday</label><br>
+    <label><input type="checkbox" class="dayFilter" value="F"> Friday</label><br>
 
 </div>
 
@@ -80,42 +89,77 @@
         populateDropdown("deptFilter", data.departments);
         populateDropdown("profFilter", data.professors);
         populateDropdown("creditsFilter", data.credits);
-        populateDropdown("daysFilter", data.days);
-        populateDropdown("timeFilter", data.times);
+        populateTimeDropdown("startTimeFilter", data.startTimes);
+        populateTimeDropdown("endTimeFilter", data.endTimes);
+    }
+
+    function formatTime(minutes) {
+
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+
+        const hour = h % 12 === 0 ? 12 : h % 12;
+        const ampm = h < 12 ? "AM" : "PM";
+
+        return `${hour}:${m.toString().padStart(2, "0")} ${ampm}`;
     }
 
     function populateDropdown(id, values) {
 
-    const select = document.getElementById(id);
+        const select = document.getElementById(id);
 
-    values.sort();
+        values.sort();
+
+        values.forEach(v => {
+
+            const option = document.createElement("option");
+            option.value = v;
+            option.textContent = v;
+
+            select.appendChild(option);
+
+        });
+    }
+
+    function populateTimeDropdown(id, values) {
+
+    const select = document.getElementById(id);
 
     values.forEach(v => {
 
         const option = document.createElement("option");
-        option.value = v;
-        option.textContent = v;
+        option.value = v; // keep minutes for backend
+        option.textContent = formatTime(v); // display readable
 
         select.appendChild(option);
 
     });
 }
 
-    async function searchCourses() {
+        async function searchCourses() {
 
         const query = document.getElementById("searchInput").value;
 
         const dept = document.getElementById("deptFilter").value;
         const prof = document.getElementById("profFilter").value;
-        const days = document.getElementById("daysFilter").value;
         const credits = document.getElementById("creditsFilter").value;
+
+        // Get selected days
+        const days = Array.from(document.querySelectorAll(".dayFilter:checked"))
+            .map(cb => cb.value);
+
+        // Get selected time blocks
+        const startTime = document.getElementById("startTimeFilter").value;
+        const endTime = document.getElementById("endTimeFilter").value;
 
         const params = new URLSearchParams({
             q: query,
             dept: dept,
             prof: prof,
-            days: days,
-            credits: credits
+            credits: credits,
+            days: days.join(","),     // "M,W,F"
+            sTime: startTime.join(","),
+            eTime: endTime.join(",")
         });
 
         const response = await fetch(`/api/search?${params}`);
@@ -184,6 +228,9 @@
 
     document.querySelectorAll("select")
         .forEach(s => s.addEventListener("change", searchCourses));
+
+    document.querySelectorAll(".dayFilter, .timeBlock")
+        .forEach(cb => cb.addEventListener("change", searchCourses));
 
     loadFilters();
 
