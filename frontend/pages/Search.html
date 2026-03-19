@@ -123,20 +123,20 @@
 
     function populateTimeDropdown(id, values) {
 
-    const select = document.getElementById(id);
+        const select = document.getElementById(id);
 
-    values.forEach(v => {
+        values.forEach(v => {
 
-        const option = document.createElement("option");
-        option.value = v; // keep minutes for backend
-        option.textContent = formatTime(v); // display readable
+            const option = document.createElement("option");
+            option.value = v; // keep minutes for backend
+            option.textContent = formatTime(v); // display readable
 
-        select.appendChild(option);
+            select.appendChild(option);
 
-    });
-}
+        });
+    }
 
-        async function searchCourses() {
+    async function searchCourses() {
 
         const query = document.getElementById("searchInput").value;
 
@@ -158,8 +158,8 @@
             prof: prof,
             credits: credits,
             days: days.join(","),     // "M,W,F"
-            sTime: startTime.join(","),
-            eTime: endTime.join(",")
+            sTime: startTime,
+            eTime: endTime
         });
 
         const response = await fetch(`/api/search?${params}`);
@@ -193,7 +193,7 @@
                 Semester: ${course.semester}<br>
                 Location: ${course.location}<br>
                 Credits: ${course.credits}<br>
-                Times: ${course.times.map(t => `${t.day} ${t.startTime}-${t.endTime}`).join(", ")}<br><br>
+                Times: ${course.times.map(t => `${t.day} ${formatTime(t.startTime)}-${formatTime(t.endTime)}`).join(", ")}<br><br>
 
                 <button onclick='addCourse(this, ${JSON.stringify(course)})'>
                     Add course
