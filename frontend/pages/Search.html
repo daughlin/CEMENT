@@ -207,7 +207,7 @@
     }
 
     async function addCourse(button, course) {
-        console.log(JSON.stringify(course));
+    try {
         const response = await fetch("/api/add-course", {
             method: "POST",
             headers: {
@@ -217,14 +217,19 @@
         });
 
         if (response.ok) {
-
             button.textContent = "Added ✓";
+            button.style.backgroundColor = "#28a745"; // Success green
             button.disabled = true;
-
         } else {
-            alert("Failed to add course");
+            // Read the conflict message sent from the Java catch block
+            const errorMsg = await response.text();
+            alert("Could not add course:\n" + errorMsg);
         }
+    } catch (error) {
+        console.error("Network error:", error);
+        alert("Server is unreachable.");
     }
+}
 
 
     document.querySelectorAll("select")

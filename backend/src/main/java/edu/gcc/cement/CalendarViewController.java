@@ -69,19 +69,18 @@ public class CalendarViewController {
 
         app.post("/api/add-course", ctx -> {
             try {
-                // The Jackson parser maps the JSON string to the Course object here
                 Course newCourse = ctx.bodyAsClass(Course.class);
 
-                schedule.getCourses().add(newCourse);
-                ctx.result("Course added");
+                // This calls the logic in Schedule.java which checks for overlaps
+                schedule.addCourse(newCourse);
 
+                ctx.status(200).result("Course added");
+            } catch (CourseTimeConflictsException e) {
+                // Send a 409 Conflict status and the specific overlap message
+                ctx.status(409).result(e.getMessage());
             } catch (Exception e) {
-                // This will print the EXACT reason for the crash in your Java console
-                System.err.println("Failed to parse JSON to Course object:");
                 e.printStackTrace();
-
-                // Sends the error message back to your browser console
-                ctx.status(500).result("Server Error: " + e.getMessage());
+                ctx.status(500).result("Internal Server Error");
             }
         });
 
