@@ -159,15 +159,27 @@ public class Search {
                         return false;
                     }
                     break;
-                case TIME:
-                    //waiting on max's time comparison functionality
-                    //for (Time time : course.getTimes()) {
-                        //you got this bro o7
-                    //}
+                case START:
+                    for (Time time : course.getTimes()) {
+                        if (time.getStartTime() < toMinutes(filter.getValue())){
+                            return false;
+                        }
+                    }
+                    break;
+                case END:
+                    for (Time time : course.getTimes()) {
+                        if (time.getEndTime() > toMinutes(filter.getValue())){
+                            return false;
+                        }
+                    }
+                    break;
                 case DAYS:
-                    //come back to this
-                    // it can be done o7
-
+                    for (Time time : course.getTimes()) {
+                        if (!filter.getValue().contains(time.getDay())){
+                            return false;
+                        }
+                    }
+                    break;
                 case CREDITS:
                     //System.out.println("credits");
                     if (!(("" + course.getCredits()).equalsIgnoreCase(filter.getValue()))) {
