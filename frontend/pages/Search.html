@@ -182,9 +182,14 @@
         }
 
         courses.forEach(course => {
-
             const div = document.createElement("div");
-            div.className = "course";
+               div.className = "course";
+
+            // Create the button as a DOM element instead of a raw string
+            // to avoid quote-nesting issues
+            const addButton = document.createElement("button");
+            addButton.textContent = "Add course";
+            addButton.onclick = () => addCourse(addButton, course);
 
             div.innerHTML = `
                 <strong>${course.courseCode} - ${course.name}</strong> (Section ${course.section})<br>
@@ -194,19 +199,15 @@
                 Location: ${course.location}<br>
                 Credits: ${course.credits}<br>
                 Times: ${course.times.map(t => `${t.day} ${formatTime(t.startTime)}-${formatTime(t.endTime)}`).join(", ")}<br><br>
+    `       ;
 
-                <button onclick='addCourse(this, ${JSON.stringify(course)})'>
-                    Add course
-                </button>
-            `;
-
+            div.appendChild(addButton);
             resultsDiv.appendChild(div);
-
         });
     }
 
     async function addCourse(button, course) {
-
+        console.log(JSON.stringify(course));
         const response = await fetch("/api/add-course", {
             method: "POST",
             headers: {

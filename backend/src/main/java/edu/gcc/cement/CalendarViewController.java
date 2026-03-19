@@ -68,13 +68,21 @@ public class CalendarViewController {
 //        });
 
         app.post("/api/add-course", ctx -> {
+            try {
+                // The Jackson parser maps the JSON string to the Course object here
+                Course newCourse = ctx.bodyAsClass(Course.class);
 
-            Course newCourse = ctx.bodyAsClass(Course.class);
+                schedule.getCourses().add(newCourse);
+                ctx.result("Course added");
 
-            schedule.getCourses().add(newCourse);
+            } catch (Exception e) {
+                // This will print the EXACT reason for the crash in your Java console
+                System.err.println("Failed to parse JSON to Course object:");
+                e.printStackTrace();
 
-            ctx.result("Course added");
-
+                // Sends the error message back to your browser console
+                ctx.status(500).result("Server Error: " + e.getMessage());
+            }
         });
 
         app.post("/api/remove-course", ctx -> {

@@ -19,11 +19,12 @@ public class Schedule {
      */
     public Schedule(String semester){
         this.semester = semester;
+        this.courses = new ArrayList<>();
     }
 
     public Schedule(String semester, ArrayList<Course> courses) {
         this.semester = semester;
-        this.courses = new ArrayList<Course>();
+        this.courses = new ArrayList<>();
         this.courses.addAll(courses);
     }
 
