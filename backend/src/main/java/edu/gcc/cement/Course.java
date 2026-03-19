@@ -78,14 +78,14 @@ private String description;
     public void setCredits(int credits) {this.credits = credits;}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
-    public String getDays() {
+    public String daysHelper() {
         String ret = "";
         for (Time time : this.times) {
             ret = ret.concat(time.getDay());
         }
         return ret;
     }
-    public String getNiceTime() {
+    public String niceTimeHelper() {
         if (times.size() == 0) {
             return "Irregular meeting times";
         }
