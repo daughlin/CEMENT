@@ -51,17 +51,17 @@ private String description;
      *Getters and Setters
      */
     public String getName() {return name;}
+    public void setName(String name) {this.name = name;}
     public String getCourseCode() {return courseCode;}
     public void setCourseCode(String courseCode) {
         this.courseCode = courseCode;
     }
     public String getSection() {return section;}
-    public void setSection(String section) {}
+    public void setSection(String section) {this.section = section;}
     public String getDepartment() {return department;}
-    public void setDepartment(String department) {department = department;}
+    public void setDepartment(String department) {this.department = department;}
     public ArrayList<String> getProfessors() {return professors;}
-    public void addProfessor(ArrayList<String> professors) {
-        this.professors = professors;}
+    public void setProfessor(ArrayList<String> professors) {this.professors = professors;}
 
     public ArrayList<Time> getTimes() {
         return times;
@@ -71,9 +71,11 @@ private String description;
     }
 
     public String getSemester() {return semester;}
-    public void setSemester(String semester) {semester = semester;}
+    public void setSemester(String semester) {this.semester = semester;}
     public String getLocation() {return location;}
+    public void setLocation(String location) {this.location = location;}
     public int getCredits() {return credits;}
+    public void setCredits(int credits) {this.credits = credits;}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
     public String getDays() {
