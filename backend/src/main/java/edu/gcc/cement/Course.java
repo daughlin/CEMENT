@@ -78,6 +78,41 @@ private String description;
     public void setCredits(int credits) {this.credits = credits;}
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
+    public String getDays() {
+        String ret = "";
+        for (Time time : this.times) {
+            ret = ret.concat(time.getDay());
+        }
+        return ret;
+    }
+    public String getNiceTime() {
+        if (times.size() == 0) {
+            return "Irregular meeting times";
+        }
+        return to12HourTime(times.getFirst().getStartTime()) + " - " + to12HourTime(times.getFirst().getEndTime());
+    }
+
+    public static String to12HourTime(int minutesPastMidnight) {
+        if (minutesPastMidnight < 0 || minutesPastMidnight >= 24 * 60) {
+            throw new IllegalArgumentException("Minutes must be between 0 and 1439.");
+        }
+
+        int hour24 = minutesPastMidnight / 60;
+        int minute = minutesPastMidnight % 60;
+
+        String amPm = (hour24 < 12) ? "AM" : "PM";
+
+        int hour12;
+        if (hour24 == 0) {
+            hour12 = 12; // midnight
+        } else if (hour24 > 12) {
+            hour12 = hour24 - 12;
+        } else {
+            hour12 = hour24;
+        }
+
+        return String.format("%d:%02d %s", hour12, minute, amPm);
+    }
 }
 
 //cole was here

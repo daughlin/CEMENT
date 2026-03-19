@@ -31,17 +31,15 @@ public class SearchController {
 
             String daysParam = ctx.queryParam("days");
             if (daysParam != null && !daysParam.isBlank()) {
-                for (String d : daysParam.split(",")) {
-                    filters.add(new Filter(d, Type.DAYS));
-                }
+                filters.add(new Filter(daysParam, Type.DAYS));
             }
 
-            String timeParam = ctx.queryParam("times");
-            if (timeParam != null && !timeParam.isBlank()) {
-                for (String t : timeParam.split(",")) {
-                    filters.add(new Filter(t, Type.TIME));
-                }
-            }
+//            String timeParam = ctx.queryParam("times");
+//            if (timeParam != null && !timeParam.isBlank()) {
+//                for (String t : timeParam.split(",")) {
+//                    filters.add(new Filter(t, Type.TIME));
+//                }
+//            }
 
             Search search = new Search(query, filters);
 
