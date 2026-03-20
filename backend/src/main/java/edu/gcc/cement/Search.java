@@ -187,6 +187,11 @@ public class Search {
                         return false;
                     }
                     break;
+                case SEM:
+                    if (!(course.getSemester().equals(filter.getValue()))){
+                        return false;
+                    }
+                    break;
                 default:
             }
         }
