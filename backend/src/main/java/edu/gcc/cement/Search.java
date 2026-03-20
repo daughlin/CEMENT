@@ -226,7 +226,7 @@ public class Search {
 
             }
             this.courseList.addAll(courses);
-            System.out.println(courseList.getFirst().getCourseCode());
+            //System.out.println(courseList.getFirst().getCourseCode());
         } catch (IOException e) {
             System.out.println(e.getMessage());
             courseList = null;
