@@ -136,17 +136,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Time label
         const time = document.createElement("div");
-        time.textContent =
-            `${minutesToTime(start)} - ${minutesToTime(end)}`;
+        time.textContent = `${minutesToTime(start)} - ${minutesToTime(end)}`;
 
         // Button
         const link = document.createElement("a");
         link.textContent = "view courses";
-        link.href = `/available-courses?day=${day}&start=${start}&end=${end}`;
+
+        const interval = 15;
+
+        const roundedStart = roundUpToInterval(start, interval);
+        const roundedEnd = roundDownToInterval(end, interval);
+
+        const groupedDays = getDayGroup(day);
+
+        if (roundedStart >= roundedEnd) {
+            link.href = `/search?days=${groupedDays}`;
+        } else {
+            const params = new URLSearchParams({
+                days: groupedDays,
+                start: roundedStart,
+                end: roundedEnd
+            });
+
+            link.href = `/search?${params.toString()}`;
+        }
 
         div.appendChild(time);
         div.appendChild(link);
-
         dayBox.appendChild(div);
     }
 
@@ -165,6 +181,26 @@ document.addEventListener("DOMContentLoaded", function () {
         const minStr = m.toString().padStart(2, "0");
 
         return `${hour12}:${minStr} ${ampm}`;
+    }
+
+    function roundUpToInterval(minutes, interval) {
+        return Math.ceil(minutes / interval) * interval;
+    }
+
+    function roundDownToInterval(minutes, interval) {
+        return Math.floor(minutes / interval) * interval;
+    }
+
+    function getDayGroup(day) {
+        if (day === "M" || day === "W" || day === "F") {
+            return "MWF";
+        }
+
+        if (day === "T" || day === "R") {
+            return "TR";
+        }
+
+        return day;
     }
 
 

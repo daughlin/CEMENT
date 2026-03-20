@@ -12,13 +12,22 @@ public class SearchController {
 
         // Load the search page
         app.get("/search", ctx -> {
-            ctx.redirect("/pages/Search.html");
+            String queryString = ctx.queryString();
+
+            if (queryString != null && !queryString.isBlank()) {
+                ctx.redirect("/pages/Search.html?" + queryString);
+            } else {
+                ctx.redirect("/pages/Search.html");
+            }
         });
 
         // SEARCH API (handles query + filters)
         app.get("/api/search", ctx -> {
 
             String query = ctx.queryParam("q");
+            if (query == null) {
+                query = "";
+            }
 
             ArrayList<Filter> filters = new ArrayList<>();
 
@@ -30,6 +39,11 @@ public class SearchController {
             String prof = ctx.queryParam("prof");
             if (prof != null && !prof.isBlank()) {
                 filters.add(new Filter(prof, Type.PROF));
+            }
+
+            String credits = ctx.queryParam("credits");
+            if (credits != null && !credits.isBlank()) {
+                filters.add(new Filter(credits, Type.CREDITS));
             }
 
             String daysParam = ctx.queryParam("days");
@@ -85,7 +99,7 @@ public class SearchController {
                 }
             }
 
-            Map<String,Object> data = new HashMap<>();
+            Map<String, Object> data = new HashMap<>();
 
             data.put("departments", departments);
             data.put("professors", professors);
