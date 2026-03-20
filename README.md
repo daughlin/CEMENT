@@ -1,6 +1,17 @@
 # CEMENT
 
-CEMENT is a student schedule planner project with a Java/Gradle backend and a separate frontend. Once setup has been completed as follows the project can be run by running main and accessing the application at http://localhost:7000/
+CEMENT is a student schedule planner project with a Java/Gradle backend and a separate frontend. Once setup has been completed as follows the project can be run by running:
+
+```bash
+cd backend
+./gradlew build
+./gradlew run
+```
+
+and accessing the application at http://localhost:7000/
+
+## Requirements
+Requires java to be installed and gradle
 
 ## Project Structure
 
@@ -71,6 +82,12 @@ Make sure you are inside the `backend` directory, since that is where the Gradle
 - `frontend` is the separate client-side application
 - Do not run Gradle commands from the repository root unless the project is restructured into a root-level Gradle build
 
+## Unfinished Sprint Tasks
+No MVP tasks are unfinished but some of the additional features we hoped to complete were not finished including:
+- Color options for the calendar
+- Saving and loading multiple different schedules
+- Hover popups for course information anywhere
+
 ## Authors
 
-Add your names here.
+Cole Amacker, Timothy Heiser, Max Ware, Ella Kocher
