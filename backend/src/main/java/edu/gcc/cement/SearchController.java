@@ -8,7 +8,7 @@ public class SearchController {
     public static void registerRoutes(Javalin app) {
 
         // Redirect root to search
-        app.get("/", ctx -> ctx.redirect("/search"));
+        app.get("/", ctx -> ctx.redirect("/pages/SemesterChoice.html"));
 
         // Load the search page
         app.get("/search", ctx -> {
@@ -30,6 +30,11 @@ public class SearchController {
             }
 
             ArrayList<Filter> filters = new ArrayList<>();
+
+            String semester = ctx.queryParam("semester");
+            if (semester != null && !semester.isBlank()) {
+                filters.add(new Filter(semester, Type.SEM));
+            }
 
             String dept = ctx.queryParam("dept");
             if (dept != null && !dept.isBlank()) {
@@ -66,6 +71,31 @@ public class SearchController {
             ArrayList<Course> results = search.getResults();
 
             ctx.json(results);
+        });
+
+        // Inside SearchController.java, within registerRoutes method:
+
+        // API to get all unique semesters from the course list
+        app.get("/api/semesters", ctx -> {
+            try {
+                // Create a blank search to load all courses from the JSON file
+                Search search = new Search("", new ArrayList<>());
+                ArrayList<Course> courses = search.getResults();
+
+                // Use a TreeSet to store unique semesters in alphabetical/chronological order
+                Set<String> semesters = new TreeSet<>();
+                for (Course c : courses) {
+                    if (c.getSemester() != null && !c.getSemester().isBlank()) {
+                        semesters.add(c.getSemester());
+                    }
+                }
+
+                // Return the list as JSON
+                ctx.json(new ArrayList<>(semesters));
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.status(500).result("Error loading semesters: " + e.getMessage());
+            }
         });
 
         // FILTER OPTIONS API (dynamic dropdowns)

@@ -175,8 +175,10 @@
     }
 
     async function searchCourses() {
-
         const query = document.getElementById("searchInput").value;
+
+        // Grab the stored semester
+        const semester = sessionStorage.getItem("selectedSemester");
 
         const dept = document.getElementById("deptFilter").value;
         const prof = document.getElementById("profFilter").value;
@@ -195,6 +197,7 @@
             dept: dept,
             prof: prof,
             credits: credits,
+            semester: semester,
             days: days.join(""),     // "MWF"
             start: startTime,
             end: endTime
