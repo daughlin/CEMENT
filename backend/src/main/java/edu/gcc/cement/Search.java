@@ -3,7 +3,7 @@ package edu.gcc.cement;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -210,17 +210,18 @@ public class Search {
     }
 
     private void readCourses() throws IOException {
-        this.courseList = new ArrayList<Course>();
-        ArrayList<Course> courses = new ArrayList<Course>();
+        this.courseList = new ArrayList<>();
+        ArrayList<Course> courses = new ArrayList<>();
 
-        String classFile = "./backend/src/main/resources/data_wolfe.json";
-
-        File f = new File(classFile);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
 
-        try {
-            root = mapper.readTree(f);
+        try (InputStream input = Search.class.getResourceAsStream("/data_wolfe.json")) {
+            if (input == null) {
+                throw new IOException("Could not find /data_wolfe.json in classpath");
+            }
+
+            root = mapper.readTree(input);
 
             // building the courses from the json
             for (JsonNode c : root.get("classes")) {
@@ -230,26 +231,37 @@ public class Search {
                 int credits = c.path("credits").asInt();
                 String section = c.path("section").asText();
 
-                ArrayList<String> professors = new ArrayList<String>();
-                for(JsonNode prof : c.path("faculty")) {
+                ArrayList<String> professors = new ArrayList<>();
+                for (JsonNode prof : c.path("faculty")) {
                     professors.add(prof.asText(""));
                 }
+
                 ArrayList<Time> times = parseTimes(c.path("times"));
                 String semester = c.path("semester").asText();
                 String location = c.path("location").asText();
 
-                courses.add(new Course(name, dept + " " + number, section, dept, professors, times, semester, location, credits, ""));
-
+                courses.add(new Course(
+                        name,
+                        dept + " " + number,
+                        section,
+                        dept,
+                        professors,
+                        times,
+                        semester,
+                        location,
+                        credits,
+                        ""
+                ));
             }
+
             this.courseList.addAll(courses);
-            //System.out.println(courseList.getFirst().getCourseCode());
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
             courseList = null;
         }
-
-
     }
+
 
     /**
      * Helper function to parse class times by day, start time, and end time from the json file
