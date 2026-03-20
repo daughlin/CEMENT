@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Semester</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+        select { padding: 10px; font-size: 16px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<h1>Welcome! Please select a semester</h1>
+
+<select id="semesterSelect">
+    <option value="" disabled selected>Choose a semester...</option>
+    <option value="2023_Fall">Fall 2023</option>
+    <option value="2024_Spring">Spring 2024</option>
+</select>
+
+<script>
+    document.getElementById("semesterSelect").addEventListener("change", function(e) {
+        // Save the selection to the browser's session storage
+        sessionStorage.setItem("selectedSemester", e.target.value);
+
+        // Redirect to the search page
+        window.location.href = "/search";
+    });
+</script>
+
+</body>
+</html>
