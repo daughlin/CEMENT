@@ -154,8 +154,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             const params = new URLSearchParams({
                 days: groupedDays,
-                sTime: roundedStart,
-                eTime: roundedEnd
+                start: roundedStart,
+                end: roundedEnd
             });
 
             link.href = `/search?${params.toString()}`;

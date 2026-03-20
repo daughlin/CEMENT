@@ -95,8 +95,16 @@
         populateDropdown("deptFilter", data.departments);
         populateDropdown("profFilter", data.professors);
         populateDropdown("creditsFilter", data.credits);
-        populateTimeDropdown("startTimeFilter", data.startTimes);
-        populateTimeDropdown("endTimeFilter", data.endTimes);
+
+        const interval = 15;
+
+        const minStart = roundDownToInterval(Math.min(...data.startTimes), interval);
+        const maxEnd = roundUpToInterval(Math.max(...data.endTimes), interval);
+
+        const timeOptions = buildTimeOptions(minStart, maxEnd, interval);
+
+        populateTimeDropdown("startTimeFilter", timeOptions);
+        populateTimeDropdown("endTimeFilter", timeOptions);
     }
 
     function formatTime(minutes) {
@@ -150,8 +158,8 @@
         const dept = params.get("dept") || "";
         const prof = params.get("prof") || "";
         const credits = params.get("credits") || "";
-        const startTime = params.get("sTime") || "";
-        const endTime = params.get("eTime") || "";
+        const startTime = params.get("start") || "";
+        const endTime = params.get("end") || "";
         const daysParam = params.get("days") || "";
 
         document.getElementById("searchInput").value = query;
@@ -188,8 +196,8 @@
             prof: prof,
             credits: credits,
             days: days.join(""),     // "MWF"
-            sTime: startTime,
-            eTime: endTime
+            start: startTime,
+            end: endTime
         });
 
         const response = await fetch(`/api/search?${params}`);
@@ -270,6 +278,24 @@
         await loadFilters();
         applyFiltersFromUrl();
         await searchCourses();
+    }
+
+    function roundDownToInterval(minutes, interval) {
+        return Math.floor(minutes / interval) * interval;
+    }
+
+    function roundUpToInterval(minutes, interval) {
+        return Math.ceil(minutes / interval) * interval;
+    }
+
+    function buildTimeOptions(start, end, interval) {
+        const values = [];
+
+        for (let t = start; t <= end; t += interval) {
+            values.push(t);
+        }
+
+        return values;
     }
 
     initPage();

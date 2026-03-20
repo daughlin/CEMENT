@@ -51,22 +51,15 @@ public class SearchController {
                 filters.add(new Filter(daysParam, Type.DAYS));
             }
 
-            String startTime = ctx.queryParam("sTime");
+            String startTime = ctx.queryParam("start");
             if (startTime != null && !startTime.isBlank()) {
                 filters.add(new Filter(startTime, Type.START));
             }
 
-            String endTime = ctx.queryParam("eTime");
+            String endTime = ctx.queryParam("end");
             if (endTime != null && !endTime.isBlank()) {
                 filters.add(new Filter(endTime, Type.END));
             }
-
-//            String timeParam = ctx.queryParam("times");
-//            if (timeParam != null && !timeParam.isBlank()) {
-//                for (String t : timeParam.split(",")) {
-//                    filters.add(new Filter(t, Type.TIME));
-//                }
-//            }
 
             Search search = new Search(query, filters);
 
