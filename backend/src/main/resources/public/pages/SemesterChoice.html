@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Semester</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
+        select { padding: 10px; font-size: 16px; margin-top: 20px; min-width: 200px; }
+    </style>
+</head>
+<body>
+
+<h1>Welcome! Please select a semester</h1>
+
+<select id="semesterSelect">
+    <option value="" disabled selected>Loading semesters...</option>
+</select>
+
+<script>
+    // Helper to make "2023_Fall" look like "Fall 2023"
+    function formatSemester(sem) {
+        if (!sem.includes('_')) return sem;
+        const [year, season] = sem.split('_');
+        return `${season} ${year}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        const select = document.getElementById("semesterSelect");
+
+        try {
+            const response = await fetch("/api/semesters");
+            if (!response.ok) throw new Error("Failed to fetch");
+
+            const semesters = await response.json();
+
+            // Clear the "Loading..." message
+            select.innerHTML = '<option value="" disabled selected>Choose a semester...</option>';
+
+            // Populate the dropdown with options from the database
+            semesters.forEach(sem => {
+                const opt = document.createElement("option");
+                opt.value = sem;
+                opt.textContent = formatSemester(sem);
+                select.appendChild(opt);
+            });
+
+        } catch (error) {
+            console.error("Error:", error);
+            select.innerHTML = '<option value="" disabled>Error loading options</option>';
+        }
+    });
+
+    // Handle the redirect when a selection is made
+    document.getElementById("semesterSelect").addEventListener("change", function(e) {
+        sessionStorage.setItem("selectedSemester", e.target.value);
+        window.location.href = "/search";
+    });
+</script>
+
+</body>
+</html>

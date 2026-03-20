@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Scheduler</title>
+
+    <style>
+
+        body{
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1{
+            margin-bottom: 20px;
+        }
+
+        /* container for all days */
+
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .day {
+            flex: 1;              /* all days share equal width */
+            min-height: 1000px;
+            position: relative;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+
+        }
+
+
+        .course {
+            background: green;
+            border: 1px solid #333;
+            border-radius: 6px;
+
+            padding: 10px;
+            font-size: 14px;
+
+            box-sizing: border-box;
+        }
+
+
+        .free-slot {
+            background: #f7f7f7;
+            border: 1px dashed #aaa;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 10px;
+        }
+
+        /* where course text will go */
+        .schedule{
+            flex-grow: 1;
+            margin: 10px 0;
+        }
+
+        /* buttons */
+        button{
+            padding: 6px;
+            cursor: pointer;
+        }
+
+        .free-slot a {
+            color: #555;
+            font-size: 13px;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+
+
+
+
+    </style>
+</head>
+
+<body>
+
+<button
+        onclick="window.location.href='/search'"
+        style="position: absolute; top: 20px; left: 20px; padding: 10px 15px; cursor: pointer; background-color: #6c757d; color: white; border: none; border-radius: 4px;">
+    Return to search
+</button>
+
+<h1>My Schedule</h1>
+
+<div class="calendar">
+
+    <div class="day" id="M">
+        <div><h3>Monday</h3></div>
+    </div>
+
+    <div class="day" id="T">
+        <div><h3>Tuesday</h3></div>
+    </div>
+
+    <div class="day" id="W">
+        <div><h3>Wednesday</h3></div>
+    </div>
+
+    <div class="day" id="R">
+        <div><h3>Thursday</h3></div>
+    </div>
+
+    <div class="day" id="F">
+        <div><h3>Friday</h3></div>
+    </div>
+
+
+</div>
+
+    <!-- Link your JavaScript file here, at the end of the body -->
+    <script src="calendar.js"></script>
+</body>
+</html>

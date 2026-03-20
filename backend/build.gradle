@@ -1,5 +1,11 @@
 plugins {
     id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+application {
+    mainClass = 'edu.gcc.cement.Main'
 }
 
 group = 'org.example'
@@ -14,8 +20,8 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'io.javalin:javalin:6.7.0'
-    implementation("org.slf4j:slf4j-simple:2.0.16")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.2")
+    implementation 'org.slf4j:slf4j-simple:2.0.16'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
 }
 
 test {
@@ -25,5 +31,13 @@ test {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'edu.gcc.cement.Main'
+        )
     }
 }
