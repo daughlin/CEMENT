@@ -38,7 +38,8 @@ public class CalendarViewController {
 
         //THIS IS HOW IT SHOULD WORK WHEN WE HAVE A DATABASE
 
-        Schedule schedule = new Schedule("Fall");
+        ScheduleStorage scheduleStorage = new ScheduleStorage();
+        Schedule schedule = scheduleStorage.loadSchedule();
 
         app.get("/api/schedule", ctx -> {
             try {
@@ -73,6 +74,7 @@ public class CalendarViewController {
 
                 // This calls the logic in Schedule.java which checks for overlaps
                 schedule.addCourse(newCourse);
+                scheduleStorage.saveSchedule(schedule);
 
                 ctx.status(200).result("Course added");
             } catch (CourseTimeConflictsException e) {
@@ -95,6 +97,8 @@ public class CalendarViewController {
                     c.getName().equals(name) &&
                             c.getSection().equals(section)
             );
+
+            scheduleStorage.saveSchedule(schedule);
 
             ctx.result("Course removed");
 
