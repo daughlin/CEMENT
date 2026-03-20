@@ -164,8 +164,8 @@
             prof: prof,
             credits: credits,
             days: days.join(""),     // "MWF"
-            sTime: startTime,
-            eTime: endTime
+            start: startTime,
+            end: endTime
         });
 
         const response = await fetch(`/api/search?${params}`);

@@ -161,14 +161,15 @@ public class Search {
                     break;
                 case START:
                     for (Time time : course.getTimes()) {
-                        if (time.getStartTime() < toMinutes(filter.getValue())){
+                        //System.out.println(toMinutes(filter.getValue()));
+                        if (time.getStartTime() < Integer.parseInt(filter.getValue())){
                             return false;
                         }
                     }
                     break;
                 case END:
                     for (Time time : course.getTimes()) {
-                        if (time.getEndTime() > toMinutes(filter.getValue())){
+                        if (time.getEndTime() > Integer.parseInt(filter.getValue())){
                             return false;
                         }
                     }
