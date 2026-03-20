@@ -7,6 +7,9 @@ public class SearchController {
 
     public static void registerRoutes(Javalin app) {
 
+        // Redirect root to search
+        app.get("/", ctx -> ctx.redirect("/search"));
+
         // Load the search page
         app.get("/search", ctx -> {
             ctx.redirect("/pages/Search.html");
