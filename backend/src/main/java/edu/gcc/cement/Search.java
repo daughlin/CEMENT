@@ -161,15 +161,27 @@ public class Search {
                     break;
                 case START:
                     for (Time time : course.getTimes()) {
-                        if (time.getStartTime() < toMinutes(filter.getValue())){
-                            return false;
+                        if(filter.getValue().contains(":")) {
+                            if (time.getStartTime() < toMinutes(filter.getValue())) {
+                                return false;
+                            }
+                        } else {
+                            if (time.getStartTime() < Integer.parseInt(filter.getValue())) {
+                                return false;
+                            }
                         }
                     }
                     break;
                 case END:
                     for (Time time : course.getTimes()) {
-                        if (time.getEndTime() > toMinutes(filter.getValue())){
-                            return false;
+                        if(filter.getValue().contains(":")) {
+                            if (time.getStartTime() > toMinutes(filter.getValue())) {
+                                return false;
+                            }
+                        } else {
+                            if (time.getStartTime() > Integer.parseInt(filter.getValue())) {
+                                return false;
+                            }
                         }
                     }
                     break;

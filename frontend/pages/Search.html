@@ -142,6 +142,30 @@
         });
     }
 
+    function applyFiltersFromUrl() {
+
+        const params = new URLSearchParams(window.location.search);
+
+        const query = params.get("q") || "";
+        const dept = params.get("dept") || "";
+        const prof = params.get("prof") || "";
+        const credits = params.get("credits") || "";
+        const startTime = params.get("sTime") || "";
+        const endTime = params.get("eTime") || "";
+        const daysParam = params.get("days") || "";
+
+        document.getElementById("searchInput").value = query;
+        document.getElementById("deptFilter").value = dept;
+        document.getElementById("profFilter").value = prof;
+        document.getElementById("creditsFilter").value = credits;
+        document.getElementById("startTimeFilter").value = startTime;
+        document.getElementById("endTimeFilter").value = endTime;
+
+        document.querySelectorAll(".dayFilter").forEach(cb => {
+            cb.checked = daysParam.includes(cb.value);
+        });
+    }
+
     async function searchCourses() {
 
         const query = document.getElementById("searchInput").value;
@@ -175,7 +199,6 @@
         displayResults(courses);
     }
 
-
     function displayResults(courses) {
 
         const resultsDiv = document.getElementById("results");
@@ -189,7 +212,7 @@
 
         courses.forEach(course => {
             const div = document.createElement("div");
-               div.className = "course";
+            div.className = "course";
 
             // Create the button as a DOM element instead of a raw string
             // to avoid quote-nesting issues
@@ -199,13 +222,13 @@
 
             div.innerHTML = `
                 <strong>${course.courseCode} - ${course.name}</strong> (Section ${course.section})<br>
-                Department:  ${course.department}<br>
+                Department: ${course.department}<br>
                 Professors: ${course.professors.join(", ")}<br>
                 Semester: ${course.semester}<br>
                 Location: ${course.location}<br>
                 Credits: ${course.credits}<br>
                 Times: ${course.times.map(t => `${t.day} ${formatTime(t.startTime)}-${formatTime(t.endTime)}`).join(", ")}<br><br>
-    `       ;
+            `;
 
             div.appendChild(addButton);
             resultsDiv.appendChild(div);
@@ -213,38 +236,43 @@
     }
 
     async function addCourse(button, course) {
-    try {
-        const response = await fetch("/api/add-course", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(course)
-        });
+        try {
+            const response = await fetch("/api/add-course", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(course)
+            });
 
-        if (response.ok) {
-            button.textContent = "Added ✓";
-            button.style.backgroundColor = "#28a745"; // Success green
-            button.disabled = true;
-        } else {
-            // Read the conflict message sent from the Java catch block
-            const errorMsg = await response.text();
-            alert("Could not add course:\n" + errorMsg);
+            if (response.ok) {
+                button.textContent = "Added ✓";
+                button.style.backgroundColor = "#28a745"; // Success green
+                button.disabled = true;
+            } else {
+                // Read the conflict message sent from the Java catch block
+                const errorMsg = await response.text();
+                alert("Could not add course:\n" + errorMsg);
+            }
+        } catch (error) {
+            console.error("Network error:", error);
+            alert("Server is unreachable.");
         }
-    } catch (error) {
-        console.error("Network error:", error);
-        alert("Server is unreachable.");
     }
-}
-
 
     document.querySelectorAll("select")
         .forEach(s => s.addEventListener("change", searchCourses));
 
-    document.querySelectorAll(".dayFilter, .timeBlock")
+    document.querySelectorAll(".dayFilter")
         .forEach(cb => cb.addEventListener("change", searchCourses));
 
-    loadFilters();
+    async function initPage() {
+        await loadFilters();
+        applyFiltersFromUrl();
+        await searchCourses();
+    }
+
+    initPage();
 
 </script>
 
