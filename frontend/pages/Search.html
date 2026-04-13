@@ -2,93 +2,129 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Course Search</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            margin: 40px;
-        }
-
-        #filters {
-            margin-top: 15px;
-        }
-
-        #filters select {
-            margin-right: 10px;
-            padding: 5px;
-        }
-
-        #results {
-            margin-top: 20px;
-        }
-
-        .course {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-bottom: 10px;
-        }
-    </style>
-
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+    >
 </head>
 
-<body>
+<body class="bg-light">
 
-<button
-        onclick="window.location.href='/calendar'"
-        style="position: absolute; top: 20px; right: 20px; padding: 10px 15px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 4px;">
-    Go to schedule
-</button>
+<div class="container py-4">
 
-<h1>Course Search</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">Course Search</h1>
 
-<input
-        type="text"
-        id="searchInput"
-        placeholder="Search courses..."
->
+        <button
+                class="btn btn-primary"
+                onclick="window.location.href='/calendar'">
+            Go to schedule
+        </button>
+    </div>
 
-<button onclick="searchCourses()">Search</button>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
 
-<div id="filters">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label for="searchInput" class="form-label">Search courses</label>
+                    <input
+                            type="text"
+                            id="searchInput"
+                            class="form-control"
+                            placeholder="Search courses..."
+                    >
+                </div>
 
-    <select id="deptFilter">
-        <option value="">Department</option>
-    </select>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" onclick="searchCourses()">Search</button>
+                </div>
+            </div>
 
-    <select id="profFilter">
-        <option value="">Professor</option>
-    </select>
+            <hr class="my-4">
 
-    <select id="creditsFilter">
-        <option value="">Credits</option>
-    </select>
+            <div id="filters">
+                <div class="row g-3">
+                    <div class="col-md-4 col-lg-2">
+                        <label for="deptFilter" class="form-label">Department</label>
+                        <select id="deptFilter" class="form-select">
+                            <option value="">Department</option>
+                        </select>
+                    </div>
 
-    <select id="startTimeFilter">
-        <option value="">Starts at/after...</option>
-    </select>
+                    <div class="col-md-4 col-lg-2">
+                        <label for="profFilter" class="form-label">Professor</label>
+                        <select id="profFilter" class="form-select">
+                            <option value="">Professor</option>
+                        </select>
+                    </div>
 
-    <select id="endTimeFilter">
-        <option value="">Ends before...</option>
-    </select>
+                    <div class="col-md-4 col-lg-2">
+                        <label for="creditsFilter" class="form-label">Credits</label>
+                        <select id="creditsFilter" class="form-select">
+                            <option value="">Credits</option>
+                        </select>
+                    </div>
 
-    <br><br>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="startTimeFilter" class="form-label">Starts at/after</label>
+                        <select id="startTimeFilter" class="form-select">
+                            <option value="">Starts at/after...</option>
+                        </select>
+                    </div>
 
-    <strong>Days:</strong><br>
-    <label><input type="checkbox" class="dayFilter" value="M"> Monday</label><br>
-    <label><input type="checkbox" class="dayFilter" value="T"> Tuesday</label><br>
-    <label><input type="checkbox" class="dayFilter" value="W"> Wednesday</label><br>
-    <label><input type="checkbox" class="dayFilter" value="R"> Thursday</label><br>
-    <label><input type="checkbox" class="dayFilter" value="F"> Friday</label><br>
+                    <div class="col-md-6 col-lg-3">
+                        <label for="endTimeFilter" class="form-label">Ends before</label>
+                        <select id="endTimeFilter" class="form-select">
+                            <option value="">Ends before...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="form-label fw-bold d-block">Days</label>
+
+                    <div class="d-flex flex-wrap gap-3">
+                        <div class="form-check">
+                            <input class="form-check-input dayFilter" type="checkbox" value="M" id="dayM">
+                            <label class="form-check-label" for="dayM">Monday</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input dayFilter" type="checkbox" value="T" id="dayT">
+                            <label class="form-check-label" for="dayT">Tuesday</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input dayFilter" type="checkbox" value="W" id="dayW">
+                            <label class="form-check-label" for="dayW">Wednesday</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input dayFilter" type="checkbox" value="R" id="dayR">
+                            <label class="form-check-label" for="dayR">Thursday</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input class="form-check-input dayFilter" type="checkbox" value="F" id="dayF">
+                            <label class="form-check-label" for="dayF">Friday</label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="results" class="d-grid gap-3"></div>
 
 </div>
 
-<div id="results"></div>
-
 <script>
-
     async function loadFilters() {
-
         const response = await fetch("/api/filters");
         const data = await response.json();
 
@@ -108,7 +144,6 @@
     }
 
     function formatTime(minutes) {
-
         const h = Math.floor(minutes / 60);
         const m = minutes % 60;
 
@@ -119,39 +154,30 @@
     }
 
     function populateDropdown(id, values) {
-
         const select = document.getElementById(id);
 
         values.sort();
 
         values.forEach(v => {
-
             const option = document.createElement("option");
             option.value = v;
             option.textContent = v;
-
             select.appendChild(option);
-
         });
     }
 
     function populateTimeDropdown(id, values) {
-
         const select = document.getElementById(id);
 
         values.forEach(v => {
-
             const option = document.createElement("option");
-            option.value = v; // keep minutes for backend
-            option.textContent = formatTime(v); // display readable
-
+            option.value = v;
+            option.textContent = formatTime(v);
             select.appendChild(option);
-
         });
     }
 
     function applyFiltersFromUrl() {
-
         const params = new URLSearchParams(window.location.search);
 
         const query = params.get("q") || "";
@@ -176,19 +202,15 @@
 
     async function searchCourses() {
         const query = document.getElementById("searchInput").value;
-
-        // Grab the stored semester
         const semester = sessionStorage.getItem("selectedSemester");
 
         const dept = document.getElementById("deptFilter").value;
         const prof = document.getElementById("profFilter").value;
         const credits = document.getElementById("creditsFilter").value;
 
-        // Get selected days
         const days = Array.from(document.querySelectorAll(".dayFilter:checked"))
             .map(cb => cb.value);
 
-        // Get selected time blocks
         const startTime = document.getElementById("startTimeFilter").value;
         const endTime = document.getElementById("endTimeFilter").value;
 
@@ -198,51 +220,61 @@
             prof: prof,
             credits: credits,
             semester: semester,
-            days: days.join(""),     // "MWF"
+            days: days.join(""),
             start: startTime,
             end: endTime
         });
 
         const response = await fetch(`/api/search?${params}`);
-
         const courses = await response.json();
 
         displayResults(courses);
     }
 
     function displayResults(courses) {
-
         const resultsDiv = document.getElementById("results");
-
         resultsDiv.innerHTML = "";
 
         if (courses.length === 0) {
-            resultsDiv.innerHTML = "<p>No courses found</p>";
+            resultsDiv.innerHTML = `
+                <div class="alert alert-secondary mb-0">
+                    No courses found
+                </div>
+            `;
             return;
         }
 
         courses.forEach(course => {
-            const div = document.createElement("div");
-            div.className = "course";
+            const card = document.createElement("div");
+            card.className = "card shadow-sm";
 
-            // Create the button as a DOM element instead of a raw string
-            // to avoid quote-nesting issues
+            const cardBody = document.createElement("div");
+            cardBody.className = "card-body";
+
             const addButton = document.createElement("button");
+            addButton.className = "btn btn-success mt-3";
             addButton.textContent = "Add course";
             addButton.onclick = () => addCourse(addButton, course);
 
-            div.innerHTML = `
-                <strong>${course.courseCode} - ${course.name}</strong> (Section ${course.section})<br>
-                Department: ${course.department}<br>
-                Professors: ${course.professors.join(", ")}<br>
-                Semester: ${course.semester}<br>
-                Location: ${course.location}<br>
-                Credits: ${course.credits}<br>
-                Times: ${course.times.map(t => `${t.day} ${formatTime(t.startTime)}-${formatTime(t.endTime)}`).join(", ")}<br><br>
+            cardBody.innerHTML = `
+                <h5 class="card-title mb-3">${course.courseCode} - ${course.name}</h5>
+                <h6 class="card-subtitle mb-3 text-muted">Section ${course.section}</h6>
+
+                <p class="mb-1"><strong>Department:</strong> ${course.department}</p>
+                <p class="mb-1"><strong>Professors:</strong> ${course.professors.join(", ")}</p>
+                <p class="mb-1"><strong>Semester:</strong> ${course.semester}</p>
+                <p class="mb-1"><strong>Location:</strong> ${course.location}</p>
+                <p class="mb-1"><strong>Credits:</strong> ${course.credits}</p>
+                <p class="mb-0"><strong>Times:</strong> ${
+                    course.times.map(t =>
+                        `${t.day} ${formatTime(t.startTime)}-${formatTime(t.endTime)}`
+                    ).join(", ")
+                }</p>
             `;
 
-            div.appendChild(addButton);
-            resultsDiv.appendChild(div);
+            cardBody.appendChild(addButton);
+            card.appendChild(cardBody);
+            resultsDiv.appendChild(card);
         });
     }
 
@@ -258,10 +290,10 @@
 
             if (response.ok) {
                 button.textContent = "Added ✓";
-                button.style.backgroundColor = "#28a745"; // Success green
+                button.classList.remove("btn-success");
+                button.classList.add("btn-secondary");
                 button.disabled = true;
             } else {
-                // Read the conflict message sent from the Java catch block
                 const errorMsg = await response.text();
                 alert("Could not add course:\n" + errorMsg);
             }
@@ -302,7 +334,6 @@
     }
 
     initPage();
-
 </script>
 
 </body>

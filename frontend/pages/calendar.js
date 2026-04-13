@@ -29,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // Process each day
             Object.keys(days).forEach(day => {
 
-                const dayBox = document.getElementById(day);
+                //const dayBox = document.getElementById(day);
+                const dayBox = document.querySelector(`#${day} .card-body`);
                 if (!dayBox) return;
 
                 const dayCourses = days[day];
