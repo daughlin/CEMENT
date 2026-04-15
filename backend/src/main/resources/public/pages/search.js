@@ -1,146 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Course Search</title>
-
-    <link
-            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-            rel="stylesheet"
-    >
-</head>
-
-<body class="bg-light">
-
-<div class="container py-4">
-
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Course Search</h1>
-
-        <button
-                class="btn btn-primary"
-                onclick="window.location.href='/calendar'">
-            Go to schedule
-        </button>
-    </div>
-
-    <div class="card shadow-sm mb-4">
-        <div class="card-body">
-
-            <div class="row g-3 align-items-end">
-                <div class="col-md-6">
-                    <label for="searchInput" class="form-label">Search courses</label>
-                    <input
-                            type="text"
-                            id="searchInput"
-                            class="form-control"
-                            placeholder="Search courses..."
-                    >
-                </div>
-
-                <div class="col-md-2">
-                    <button class="btn btn-primary w-100" onclick="searchCourses()">Search</button>
-                </div>
-            </div>
-
-            <hr class="my-4">
-
-            <div id="filters">
-                <div class="row g-3">
-                    <div class="col-md-4 col-lg-2">
-                        <label for="deptFilter" class="form-label">Department</label>
-                        <select id="deptFilter" class="form-select">
-                            <option value="">Department</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 col-lg-2">
-                        <label for="profFilter" class="form-label">Professor</label>
-                        <select id="profFilter" class="form-select">
-                            <option value="">Professor</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-4 col-lg-2">
-                        <label for="creditsFilter" class="form-label">Credits</label>
-                        <select id="creditsFilter" class="form-select">
-                            <option value="">Credits</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3">
-                        <label for="startTimeFilter" class="form-label">Starts at/after</label>
-                        <select id="startTimeFilter" class="form-select">
-                            <option value="">Starts at/after...</option>
-                        </select>
-                    </div>
-
-                    <div class="col-md-6 col-lg-3">
-                        <label for="endTimeFilter" class="form-label">Ends before</label>
-                        <select id="endTimeFilter" class="form-select">
-                            <option value="">Ends before...</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <label class="form-label fw-bold d-block">Days</label>
-
-                    <div class="d-flex flex-wrap gap-3">
-                        <div class="form-check">
-                            <input class="form-check-input dayFilter" type="checkbox" value="M" id="dayM">
-                            <label class="form-check-label" for="dayM">Monday</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input dayFilter" type="checkbox" value="T" id="dayT">
-                            <label class="form-check-label" for="dayT">Tuesday</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input dayFilter" type="checkbox" value="W" id="dayW">
-                            <label class="form-check-label" for="dayW">Wednesday</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input dayFilter" type="checkbox" value="R" id="dayR">
-                            <label class="form-check-label" for="dayR">Thursday</label>
-                        </div>
-
-                        <div class="form-check">
-                            <input class="form-check-input dayFilter" type="checkbox" value="F" id="dayF">
-                            <label class="form-check-label" for="dayF">Friday</label>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-    <div id="results" class="d-grid gap-3"></div>
-
-</div>
-
-<script>
-    async function loadFilters() {
+async function loadFilters() {
         const response = await fetch("/api/filters");
         const data = await response.json();
 
         populateDropdown("deptFilter", data.departments);
         populateDropdown("profFilter", data.professors);
         populateDropdown("creditsFilter", data.credits);
+    }
 
-        const interval = 15;
-
-        const minStart = roundDownToInterval(Math.min(...data.startTimes), interval);
-        const maxEnd = roundUpToInterval(Math.max(...data.endTimes), interval);
-
-        const timeOptions = buildTimeOptions(minStart, maxEnd, interval);
-
-        populateTimeDropdown("startTimeFilter", timeOptions);
-        populateTimeDropdown("endTimeFilter", timeOptions);
+    function timeInputToMinutes(value) {
+      if (!value) return "";
+      const [h, m] = value.split(":").map(Number);
+      return h * 60 + m;
     }
 
     function formatTime(minutes) {
@@ -192,15 +62,43 @@
         document.getElementById("deptFilter").value = dept;
         document.getElementById("profFilter").value = prof;
         document.getElementById("creditsFilter").value = credits;
-        document.getElementById("startTimeFilter").value = startTime;
-        document.getElementById("endTimeFilter").value = endTime;
+        document.getElementById("startTimeFilter").value = formatTime(startTime);
+        document.getElementById("endTimeFilter").value = formatTime(endTime);
+        ``
 
         document.querySelectorAll(".dayFilter").forEach(cb => {
             cb.checked = daysParam.includes(cb.value);
         });
     }
 
+    function validateTimeRange() {
+      const startInput = document.getElementById("startTimeFilter");
+      const endInput = document.getElementById("endTimeFilter");
+      const msg = document.getElementById("timeValidationMessage");
+
+      const startMinutes = timeInputToMinutes(startInput.value);
+      const endMinutes = timeInputToMinutes(endInput.value);
+
+      // Valid if either is empty
+      if (startMinutes === "" || endMinutes === "") {
+        msg.classList.add("d-none");
+        return true;
+      }
+
+      if (startMinutes > endMinutes) {
+        msg.classList.remove("d-none");
+        return false;
+      }
+
+      msg.classList.add("d-none");
+      return true;
+    }
+
     async function searchCourses() {
+        if (!validateTimeRange()) {
+            return; // stop search if invalid
+        }
+
         const query = document.getElementById("searchInput").value;
         const semester = sessionStorage.getItem("selectedSemester");
 
@@ -211,8 +109,13 @@
         const days = Array.from(document.querySelectorAll(".dayFilter:checked"))
             .map(cb => cb.value);
 
-        const startTime = document.getElementById("startTimeFilter").value;
-        const endTime = document.getElementById("endTimeFilter").value;
+        const startTime = timeInputToMinutes(
+          document.getElementById("startTimeFilter").value
+        );
+
+        const endTime = timeInputToMinutes(
+          document.getElementById("endTimeFilter").value
+        );
 
         const params = new URLSearchParams({
             q: query,
@@ -306,8 +209,27 @@
     document.querySelectorAll("select")
         .forEach(s => s.addEventListener("change", searchCourses));
 
+    document.querySelectorAll("input[type='time']")
+      .forEach(i => i.addEventListener("change", searchCourses));
+
     document.querySelectorAll(".dayFilter")
         .forEach(cb => cb.addEventListener("change", searchCourses));
+
+    document
+      .getElementById("clearStartTimeBtn")
+      .addEventListener("click", () => {
+        document.getElementById("startTimeFilter").value = "";
+        document.getElementById("timeValidationMessage").classList.add("d-none");
+        searchCourses();
+      });
+
+      document
+        .getElementById("clearEndTimeBtn")
+        .addEventListener("click", () => {
+          document.getElementById("endTimeFilter").value = "";
+          document.getElementById("timeValidationMessage").classList.add("d-none");
+          searchCourses();
+        });
 
     async function initPage() {
         await loadFilters();
@@ -334,7 +256,3 @@
     }
 
     initPage();
-</script>
-
-</body>
-</html>
