@@ -5,16 +5,12 @@ async function loadFilters() {
         populateDropdown("deptFilter", data.departments);
         populateDropdown("profFilter", data.professors);
         populateDropdown("creditsFilter", data.credits);
+    }
 
-        const interval = 15;
-
-        const minStart = roundDownToInterval(Math.min(...data.startTimes), interval);
-        const maxEnd = roundUpToInterval(Math.max(...data.endTimes), interval);
-
-        const timeOptions = buildTimeOptions(minStart, maxEnd, interval);
-
-        populateTimeDropdown("startTimeFilter", timeOptions);
-        populateTimeDropdown("endTimeFilter", timeOptions);
+    function timeInputToMinutes(value) {
+      if (!value) return "";
+      const [h, m] = value.split(":").map(Number);
+      return h * 60 + m;
     }
 
     function formatTime(minutes) {
@@ -66,15 +62,43 @@ async function loadFilters() {
         document.getElementById("deptFilter").value = dept;
         document.getElementById("profFilter").value = prof;
         document.getElementById("creditsFilter").value = credits;
-        document.getElementById("startTimeFilter").value = startTime;
-        document.getElementById("endTimeFilter").value = endTime;
+        document.getElementById("startTimeFilter").value = formatTime(startTime);
+        document.getElementById("endTimeFilter").value = formatTime(endTime);
+        ``
 
         document.querySelectorAll(".dayFilter").forEach(cb => {
             cb.checked = daysParam.includes(cb.value);
         });
     }
 
+    function validateTimeRange() {
+      const startInput = document.getElementById("startTimeFilter");
+      const endInput = document.getElementById("endTimeFilter");
+      const msg = document.getElementById("timeValidationMessage");
+
+      const startMinutes = timeInputToMinutes(startInput.value);
+      const endMinutes = timeInputToMinutes(endInput.value);
+
+      // Valid if either is empty
+      if (startMinutes === "" || endMinutes === "") {
+        msg.classList.add("d-none");
+        return true;
+      }
+
+      if (startMinutes > endMinutes) {
+        msg.classList.remove("d-none");
+        return false;
+      }
+
+      msg.classList.add("d-none");
+      return true;
+    }
+
     async function searchCourses() {
+        if (!validateTimeRange()) {
+            return; // stop search if invalid
+        }
+
         const query = document.getElementById("searchInput").value;
         const semester = sessionStorage.getItem("selectedSemester");
 
@@ -85,8 +109,13 @@ async function loadFilters() {
         const days = Array.from(document.querySelectorAll(".dayFilter:checked"))
             .map(cb => cb.value);
 
-        const startTime = document.getElementById("startTimeFilter").value;
-        const endTime = document.getElementById("endTimeFilter").value;
+        const startTime = timeInputToMinutes(
+          document.getElementById("startTimeFilter").value
+        );
+
+        const endTime = timeInputToMinutes(
+          document.getElementById("endTimeFilter").value
+        );
 
         const params = new URLSearchParams({
             q: query,
@@ -180,8 +209,27 @@ async function loadFilters() {
     document.querySelectorAll("select")
         .forEach(s => s.addEventListener("change", searchCourses));
 
+    document.querySelectorAll("input[type='time']")
+      .forEach(i => i.addEventListener("change", searchCourses));
+
     document.querySelectorAll(".dayFilter")
         .forEach(cb => cb.addEventListener("change", searchCourses));
+
+    document
+      .getElementById("clearStartTimeBtn")
+      .addEventListener("click", () => {
+        document.getElementById("startTimeFilter").value = "";
+        document.getElementById("timeValidationMessage").classList.add("d-none");
+        searchCourses();
+      });
+
+      document
+        .getElementById("clearEndTimeBtn")
+        .addEventListener("click", () => {
+          document.getElementById("endTimeFilter").value = "";
+          document.getElementById("timeValidationMessage").classList.add("d-none");
+          searchCourses();
+        });
 
     async function initPage() {
         await loadFilters();
