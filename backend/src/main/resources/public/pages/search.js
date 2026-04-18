@@ -149,21 +149,40 @@ async function loadFilters() {
             addButton.onclick = () => addCourse(addButton, course);
 
             cardBody.innerHTML = `
-                <h5 class="card-title mb-3">${course.courseCode} - ${course.name}</h5>
-                <h6 class="card-subtitle mb-3 text-muted">Section ${course.section}</h6>
+                <h5 class="card-title mb-3">${course.courseCode} ${course.section}</h5>
+                <h6 class="card-subtitle mb-3 text-muted">${course.name}</h6>
 
-                <p class="mb-1"><strong>Department:</strong> ${course.department}</p>
-                <p class="mb-1"><strong>Professors:</strong> ${course.professors.join(", ")}</p>
-                <p class="mb-1"><strong>Semester:</strong> ${course.semester}</p>
-                <p class="mb-1"><strong>Location:</strong> ${course.location}</p>
-                <p class="mb-1"><strong>Credits:</strong> ${course.credits}</p>
-                <p class="mb-0"><strong>Times:</strong> ${
+                <p class="mb-1 d-none"><strong>Department:</strong> ${course.department}</p>
+                <p class="mb-1 d-none"><strong>Professors:</strong> ${course.professors.join(", ")}</p>
+                <p class="mb-1 d-none"><strong>Semester:</strong> ${course.semester}</p>
+                <p class="mb-1 d-none"><strong>Location:</strong> ${course.location}</p>
+                <p class="mb-1 d-none"><strong>Credits:</strong> ${course.credits}</p>
+                <p class="mb-0 d-none"><strong>Times:</strong> ${
                     course.times.map(t =>
                         `${t.day} ${formatTime(t.startTime)}-${formatTime(t.endTime)}`
                     ).join(", ")
                 }</p>
             `;
 
+
+            const showButton = document.createElement("button");
+            showButton.className = "btn btn-outline-primary mt-3";
+            showButton.textContent = "Show more";
+            showButton.onclick = () => {
+                const details = cardBody.querySelectorAll(".mb-1, .mb-0");
+
+                if (showButton.textContent === "Show more") {
+                    details.forEach(item => item.classList.remove("d-none"));
+                    showButton.textContent = "Show less";
+                } else {
+                    details.forEach(item => item.classList.add("d-none"));
+                    showButton.textContent = "Show more";
+                }
+            };
+
+
+
+            cardBody.appendChild(showButton);
             cardBody.appendChild(addButton);
             card.appendChild(cardBody);
             resultsDiv.appendChild(card);
