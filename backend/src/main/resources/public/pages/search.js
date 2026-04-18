@@ -36,17 +36,6 @@ async function loadFilters() {
         });
     }
 
-    function populateTimeDropdown(id, values) {
-        const select = document.getElementById(id);
-
-        values.forEach(v => {
-            const option = document.createElement("option");
-            option.value = v;
-            option.textContent = formatTime(v);
-            select.appendChild(option);
-        });
-    }
-
     function applyFiltersFromUrl() {
         const params = new URLSearchParams(window.location.search);
 
@@ -223,13 +212,41 @@ async function loadFilters() {
         searchCourses();
       });
 
-      document
-        .getElementById("clearEndTimeBtn")
+    document
+      .getElementById("clearEndTimeBtn")
+      .addEventListener("click", () => {
+        document.getElementById("endTimeFilter").value = "";
+        document.getElementById("timeValidationMessage").classList.add("d-none");
+        searchCourses();
+      });
+
+   document
+        .getElementById("clearFiltersBtn")
         .addEventListener("click", () => {
+          // Clear time inputs
+          document.getElementById("startTimeFilter").value = "";
           document.getElementById("endTimeFilter").value = "";
-          document.getElementById("timeValidationMessage").classList.add("d-none");
+
+          // Hide time validation message (if present)
+          const timeMsg = document.getElementById("timeValidationMessage");
+          if (timeMsg) {
+            timeMsg.classList.add("d-none");
+          }
+
+          // Reset dropdowns to default (empty value)
+          document.getElementById("deptFilter").value = "";
+          document.getElementById("profFilter").value = "";
+          document.getElementById("creditsFilter").value = "";
+
+          // Uncheck all day checkboxes
+          document
+            .querySelectorAll(".dayFilter")
+            .forEach(cb => cb.checked = false);
+
+          // Trigger refreshed search
           searchCourses();
         });
+
 
     async function initPage() {
         await loadFilters();
