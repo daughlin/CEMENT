@@ -256,11 +256,15 @@ async function loadFilters() {
     }
 
     document.addEventListener("DOMContentLoaded", function () {
+        const chatToggle = document.getElementById("chat-toggle");
+        const chatWindow = document.getElementById("chat-window");
+        const chatClose = document.getElementById("chat-close");
+
         const chatInput = document.getElementById("chat-input");
         const chatSend = document.getElementById("chat-send");
         const chatMessages = document.getElementById("chat-messages");
 
-        if (!chatInput || !chatSend || !chatMessages) {
+        if (!chatToggle || !chatWindow || !chatClose || !chatInput || !chatSend || !chatMessages) {
             console.warn("Chat elements not found.");
             return;
         }
@@ -275,10 +279,7 @@ async function loadFilters() {
 
         async function sendMessage() {
             const message = chatInput.value.trim();
-
-            if (message === "") {
-                return;
-            }
+            if (message === "") return;
 
             addMessage(message, "user-message");
             chatInput.value = "";
@@ -298,17 +299,28 @@ async function loadFilters() {
                 if (!response.ok) {
                     const errorText = await response.text();
                     console.error("Chat backend error:", response.status, errorText);
-                    addMessage("Backend error: " + response.status, "bot-message");
+                    addMessage("Backend error.", "bot-message");
                     return;
                 }
 
                 const data = await response.json();
                 addMessage(data.reply || "No response from chatbot.", "bot-message");
             } catch (error) {
-                console.error("Fetch failed:", error);
+                console.error(error);
                 addMessage("Server error. Please try again.", "bot-message");
             }
         }
+
+        chatToggle.addEventListener("click", function () {
+            chatWindow.classList.remove("chat-hidden");
+            chatToggle.classList.add("chat-hidden");
+            chatInput.focus();
+        });
+
+        chatClose.addEventListener("click", function () {
+            chatWindow.classList.add("chat-hidden");
+            chatToggle.classList.remove("chat-hidden");
+        });
 
         chatSend.addEventListener("click", sendMessage);
 
@@ -318,6 +330,8 @@ async function loadFilters() {
                 sendMessage();
             }
         });
+
+        addMessage("Hi! I can help with schedules, course searches, and filters.", "bot-message");
     });
 
     initPage();
