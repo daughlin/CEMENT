@@ -1,4 +1,9 @@
 package edu.gcc.cement;
 
-public class ChatIntent {
+public enum ChatIntent {
+    APP_HELP,
+    COURSE_SEARCH,
+    SCHEDULE_SUGGESTION,
+    FILTER_EXPLANATION,
+    UNKNOWN
 }

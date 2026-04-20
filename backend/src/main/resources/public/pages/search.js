@@ -255,4 +255,69 @@ async function loadFilters() {
         return values;
     }
 
+    document.addEventListener("DOMContentLoaded", function () {
+        const chatInput = document.getElementById("chat-input");
+        const chatSend = document.getElementById("chat-send");
+        const chatMessages = document.getElementById("chat-messages");
+
+        if (!chatInput || !chatSend || !chatMessages) {
+            console.warn("Chat elements not found.");
+            return;
+        }
+
+        function addMessage(text, className) {
+            const messageDiv = document.createElement("div");
+            messageDiv.classList.add("chat-message", className);
+            messageDiv.textContent = text;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const message = chatInput.value.trim();
+
+            if (message === "") {
+                return;
+            }
+
+            addMessage(message, "user-message");
+            chatInput.value = "";
+
+            try {
+                const response = await fetch("/api/chat", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        studentId: "12345"
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Chat backend error:", response.status, errorText);
+                    addMessage("Backend error: " + response.status, "bot-message");
+                    return;
+                }
+
+                const data = await response.json();
+                addMessage(data.reply || "No response from chatbot.", "bot-message");
+            } catch (error) {
+                console.error("Fetch failed:", error);
+                addMessage("Server error. Please try again.", "bot-message");
+            }
+        }
+
+        chatSend.addEventListener("click", sendMessage);
+
+        chatInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                sendMessage();
+            }
+        });
+    });
+
     initPage();
