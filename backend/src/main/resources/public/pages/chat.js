@@ -1,4 +1,25 @@
 document.addEventListener("DOMContentLoaded", function () {
+    const CHAT_STORAGE_KEY = "cement_chat_history";
+
+    function saveMessages(messages) {
+        sessionStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+    }
+
+    function loadMessages() {
+        const stored = sessionStorage.getItem(CHAT_STORAGE_KEY);
+
+        if (!stored) {
+            return [];
+        }
+
+        try {
+            return JSON.parse(stored);
+        } catch (error) {
+            console.error("Failed to parse chat history:", error);
+            return [];
+        }
+    }
+
     // Avoid adding the chat twice
     if (document.getElementById("chat-toggle") || document.getElementById("chat-window")) {
         return;
@@ -176,17 +197,30 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatSend = document.getElementById("chat-send");
     const chatMessages = document.getElementById("chat-messages");
 
-    function addMessage(text, className) {
+    let messageHistory = loadMessages();
+
+    function addMessage(text, className, shouldSave = true) {
         const messageDiv = document.createElement("div");
         messageDiv.classList.add("chat-message", className);
         messageDiv.textContent = text;
         chatMessages.appendChild(messageDiv);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        if (shouldSave) {
+            messageHistory.push({
+                text: text,
+                className: className
+            });
+            saveMessages(messageHistory);
+        }
     }
 
     async function sendMessage() {
         const message = chatInput.value.trim();
-        if (message === "") return;
+
+        if (message === "") {
+            return;
+        }
 
         addMessage(message, "user-message");
         chatInput.value = "";
@@ -238,5 +272,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    addMessage("Hi! I can help with schedules, course searches, and filters.", "bot-message");
+    if (messageHistory.length > 0) {
+        messageHistory.forEach(msg => {
+            addMessage(msg.text, msg.className, false);
+        });
+    } else {
+        addMessage("Hi! I can help with schedules, course searches, and filters.", "bot-message");
+    }
 });
