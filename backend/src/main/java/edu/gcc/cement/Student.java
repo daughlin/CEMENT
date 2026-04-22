@@ -32,5 +32,9 @@ public class Student {
      */
     public void search(String query, Filter filter){}
 
+    public String getPdf() {
+        return "/resources/degree-pdfs/" + major + ".pdf";
+    }
+
 
 }
