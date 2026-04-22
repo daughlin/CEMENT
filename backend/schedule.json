@@ -1,0 +1,70 @@
+{
+  "courses" : [ {
+    "name" : "STUDY ABROAD",
+    "courseCode" : "ABRD 300",
+    "section" : "A",
+    "department" : "ABRD",
+    "professors" : [ "Inman, John G." ],
+    "times" : [ ],
+    "semester" : "2023_Fall",
+    "location" : "Off Campus Course",
+    "credits" : 0,
+    "description" : ""
+  }, {
+    "name" : "STUDY ABROAD",
+    "courseCode" : "ABRD 300",
+    "section" : "A",
+    "department" : "ABRD",
+    "professors" : [ "Inman, John G." ],
+    "times" : [ ],
+    "semester" : "2023_Fall",
+    "location" : "Off Campus Course",
+    "credits" : 0,
+    "description" : ""
+  }, {
+    "name" : "STUDY ABROAD",
+    "courseCode" : "ABRD 300",
+    "section" : "A",
+    "department" : "ABRD",
+    "professors" : [ "Inman, John G." ],
+    "times" : [ ],
+    "semester" : "2023_Fall",
+    "location" : "Off Campus Course",
+    "credits" : 0,
+    "description" : ""
+  }, {
+    "name" : "STUDIES IN BIOLOGY",
+    "courseCode" : "BIOL 390",
+    "section" : "A",
+    "department" : "BIOL",
+    "professors" : [ "Wood, Darren" ],
+    "times" : [ ],
+    "semester" : "2023_Winter_Online",
+    "location" : "On Line Course",
+    "credits" : 3,
+    "description" : ""
+  }, {
+    "name" : "STUDY ABROAD",
+    "courseCode" : "ABRD 300",
+    "section" : "A",
+    "department" : "ABRD",
+    "professors" : [ "Inman, John G." ],
+    "times" : [ ],
+    "semester" : "2023_Fall",
+    "location" : "Off Campus Course",
+    "credits" : 0,
+    "description" : ""
+  }, {
+    "name" : "STUDY ABROAD",
+    "courseCode" : "ABRD 300",
+    "section" : "A",
+    "department" : "ABRD",
+    "professors" : [ "Inman, John G." ],
+    "times" : [ ],
+    "semester" : "2023_Fall",
+    "location" : "Off Campus Course",
+    "credits" : 0,
+    "description" : ""
+  } ],
+  "semester" : null
+}
