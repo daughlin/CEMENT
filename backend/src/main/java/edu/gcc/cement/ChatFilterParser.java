@@ -156,12 +156,28 @@ public class ChatFilterParser {
 
     private String parseProfessor(String message, ArrayList<Filter> filters) {
         for (String professor : validProfessors) {
-            String full = professor.toLowerCase();
-            String last = professor.split(",")[0].trim().toLowerCase();
+            if (professor == null || professor.isBlank()) {
+                continue;
+            }
+
+            String full = professor.toLowerCase().trim();
+            if (full.isBlank()) {
+                continue;
+            }
 
             if (message.contains(full)) {
                 filters.add(new Filter(professor, Type.PROF));
                 return message.replace(full, " ");
+            }
+
+            String[] parts = professor.split(",");
+            if (parts.length == 0) {
+                continue;
+            }
+
+            String last = parts[0].trim().toLowerCase();
+            if (last.isBlank()) {
+                continue;
             }
 
             if (message.contains(last)) {
