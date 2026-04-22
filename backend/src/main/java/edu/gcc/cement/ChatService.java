@@ -4,13 +4,23 @@ public class ChatService {
 
     private final IntentRouter intentRouter;
     private final HelpService helpService;
+    private final ChatCourseSearchService chatCourseSearchService;
 
     public ChatService() {
         this.intentRouter = new IntentRouter();
         this.helpService = new HelpService();
+        this.chatCourseSearchService = new ChatCourseSearchService();
     }
 
     public ChatResponse handleMessage(ChatRequest request) {
+        if (request == null || request.getMessage() == null || request.getMessage().isBlank()) {
+            return new ChatResponse(
+                    "Please enter a message.",
+                    ChatIntent.UNKNOWN.name(),
+                    null
+            );
+        }
+
         String message = request.getMessage();
         ChatIntent intent = intentRouter.detectIntent(message);
 
@@ -31,18 +41,15 @@ public class ChatService {
         return new ChatResponse(reply, ChatIntent.APP_HELP.name(), null);
     }
 
-    private ChatResponse handleFilterExplanation(String message) {
-        String reply = "Filters let you narrow courses by department, professor, credits, days, and time.";
-        return new ChatResponse(reply, ChatIntent.FILTER_EXPLANATION.name(), null);
-    }
-
     private ChatResponse handleCourseSearch(String message) {
-        String reply = "Course search is not connected yet, but this is where backend search logic will run.";
-        return new ChatResponse(reply, ChatIntent.COURSE_SEARCH.name(), null);
+        return chatCourseSearchService.handle(message);
     }
 
     private ChatResponse handleScheduleSuggestion(String message) {
-        String reply = "Schedule suggestions are not connected yet, but this is where schedule generation logic will run.";
-        return new ChatResponse(reply, ChatIntent.SCHEDULE_SUGGESTION.name(), null);
+        return new ChatResponse(
+                "Schedule suggestions are not connected yet, but I can already help search for courses.",
+                ChatIntent.SCHEDULE_SUGGESTION.name(),
+                null
+        );
     }
 }

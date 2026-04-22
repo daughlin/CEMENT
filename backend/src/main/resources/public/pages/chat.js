@@ -20,12 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Avoid adding the chat twice
     if (document.getElementById("chat-toggle") || document.getElementById("chat-window")) {
         return;
     }
 
-    // Add chat HTML to the page
     document.body.insertAdjacentHTML("beforeend", `
         <button id="chat-toggle" type="button">Chat</button>
 
@@ -48,7 +46,6 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     `);
 
-    // Add chat CSS to the page
     const style = document.createElement("style");
     style.textContent = `
         #chat-toggle {
@@ -139,6 +136,17 @@ document.addEventListener("DOMContentLoaded", function () {
             color: #1e293b;
         }
 
+        .chat-course {
+            align-self: flex-start;
+            background: #f1f5f9;
+            border: 1px solid #dbe3ec;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            line-height: 1.4;
+            max-width: 90%;
+        }
+
         #chat-input-area {
             display: flex;
             gap: 8px;
@@ -208,6 +216,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (shouldSave) {
             messageHistory.push({
+                type: "message",
                 text: text,
                 className: className
             });
@@ -215,41 +224,76 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    async function sendMessage() {
-        const message = chatInput.value.trim();
+    function addCourseCard(course, shouldSave = true) {
+        const div = document.createElement("div");
+        div.className = "chat-course";
+        div.innerHTML = `
+            <strong>${course.courseCode}</strong> - ${course.name}<br>
+            ${course.credits} credits<br>
+            ${course.professors?.[0] || ""}
+        `;
+        chatMessages.appendChild(div);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
 
-        if (message === "") {
+        if (shouldSave) {
+            messageHistory.push({
+                type: "course",
+                course: course
+            });
+            saveMessages(messageHistory);
+        }
+    }
+
+    function displayCourses(courses, shouldSave = true) {
+        courses.slice(0, 5).forEach(course => {
+            addCourseCard(course, shouldSave);
+        });
+    }
+
+    function sendMessage() {
+        const userMessage = chatInput.value.trim();
+
+        if (!userMessage) {
             return;
         }
 
-        addMessage(message, "user-message");
+        addMessage(userMessage, "user-message");
         chatInput.value = "";
 
-        try {
-            const response = await fetch("/api/chat", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    message: message,
-                    studentId: "12345"
-                })
+        fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: userMessage
+            })
+        })
+            .then(async response => {
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error("Chat backend error:", errorText);
+                    addMessage("Server error: " + errorText, "bot-message");
+                    return null;
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                if (!data) {
+                    return;
+                }
+
+                addMessage(data.reply, "bot-message");
+
+                if (data.intent === "COURSE_SEARCH" && data.data) {
+                    displayCourses(data.data);
+                }
+            })
+            .catch(err => {
+                console.error("Chat fetch failed:", err);
+                addMessage("Error contacting server.", "bot-message");
             });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                console.error("Chat backend error:", response.status, errorText);
-                addMessage("Backend error.", "bot-message");
-                return;
-            }
-
-            const data = await response.json();
-            addMessage(data.reply || "No response from chatbot.", "bot-message");
-        } catch (error) {
-            console.error("Chat fetch failed:", error);
-            addMessage("Server error. Please try again.", "bot-message");
-        }
     }
 
     chatToggle.addEventListener("click", function () {
@@ -273,8 +317,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     if (messageHistory.length > 0) {
-        messageHistory.forEach(msg => {
-            addMessage(msg.text, msg.className, false);
+        messageHistory.forEach(entry => {
+            if (entry.type === "course" && entry.course) {
+                addCourseCard(entry.course, false);
+            } else if (entry.text && entry.className) {
+                addMessage(entry.text, entry.className, false);
+            }
         });
     } else {
         addMessage("Hi! I can help with schedules, course searches, and filters.", "bot-message");
