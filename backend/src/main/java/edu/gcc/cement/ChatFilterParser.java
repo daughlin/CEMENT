@@ -113,9 +113,9 @@ public class ChatFilterParser {
             message = message.replace("afternoon", " ");
         }
 
-        if (message.contains("evening")) {
+        if (message.contains("night")) {
             filters.add(new Filter("17:00", Type.START));
-            message = message.replace("evening", " ");
+            message = message.replace("night", " ");
         }
 
         if (message.contains("before noon")) {
@@ -198,6 +198,14 @@ public class ChatFilterParser {
                 .replace("courses", " ")
                 .replace("with", " ")
                 .replace("that are", " ")
+                .replace("that meet", " ")
+                .replace("taught by", " ")
+                .replace("dr", " ")
+                .replace("dr.", " ")
+                .replace("doctor", " ")
+                .replace("prof", " ")
+                .replace("prof.", " ")
+                .replace("professor", " ")
                 .replace("that is", " ");
     }
 
@@ -215,6 +223,10 @@ public class ChatFilterParser {
                     hour += 12;
                 } else if (ampm.equals("am") && hour == 12) {
                     hour = 0;
+                }
+            } else {
+                if (hour <= 7) {
+                    hour += 12;
                 }
             }
 
