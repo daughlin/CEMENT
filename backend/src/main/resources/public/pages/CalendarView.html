@@ -7,372 +7,18 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --slot-height: 60px;
-            --slots-per-day: 20;
-        }
+    <link rel="stylesheet" href="style.css">
 
-        .calendar-wrapper {
-            overflow-x: auto;
-        }
 
-        .day-card {
-            min-width: 180px;
-        }
-
-        .day-card .card-body {
-            padding: 0;
-        }
-
-        .time-column,
-        .day-grid {
-            display: grid;
-            grid-template-columns: 45px 1fr;
-            grid-template-rows: repeat(20, 60px);
-            border-top: 1px solid #ced4da;
-            border-left: 1px solid #ced4da;
-        }
-
-
-        .time-column {
-            width: 80px;
-        }
-
-        .day-grid {
-            position: relative;
-            background-color: white;
-            min-height: calc(var(--slots-per-day) * var(--slot-height));
-            border: 1px solid #ced4da;
-            background-image: repeating-linear-gradient(
-                to bottom,
-                transparent 0,
-                transparent calc(var(--slot-height) - 1px),
-                #ced4da calc(var(--slot-height) - 1px),
-                #ced4da var(--slot-height)
-            );
-        }
-
-        .time-slot {
-            display: grid;
-            grid-template-columns: 50px 1fr;
-            align-items: center;
-            min-height: 100%;
-            border: 1px solid #ced4da;
-            background-color: white;
-            padding: 4px 8px;
-            box-sizing: border-box;
-        }
-
-        .time-label {
-            grid-column: 1;
-            font-size: 0.6rem;
-            color: #6c757d;
-            padding: 4px;
-            border-right: 1px solid #ced4da;
-            border-bottom: 1px solid #ced4da;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            box-sizing: border-box;
-        }
-
-        .add-course-link {
-            grid-column: 2;
-            justify-self: center;
-            align-self: center;
-            font-size: 0.8rem;
-            text-decoration: none;
-            border-bottom: 1px solid #ced4da;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-sizing: border-box;
-        }
-
-
-        .add-course-link:hover {
-            background-color: #e9ecef;
-        }
-
-
-        .time-slot.empty-slot:hover {
-            background-color: #f8f9fa;
-        }
-
-
-
-        .course-block {
-            background: #198754;
-            color: white;
-            border-radius: 6px;
-            padding: 8px;
-            font-size: 0.85rem;
-            margin: 2px;
-            z-index: 2;
-            position: relative;
-        }
-
-        .draggable-course {
-            cursor: grab;
-            position: relative;
-        }
-
-        .draggable-course.dragging {
-            opacity: 1;
-            z-index: 9999;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-        }
-
-        .drop-active {
-            background-color: #e7f1ff;
-            border-color: #0d6efd;
-        }
-
-        #favoritesList.drop-active {
-            background-color: #e7f1ff;
-            border: 2px dashed #0d6efd;
-        }
-
-
-        .favorites-panel {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            border-radius: 10px;
-            padding: 12px;
-
-            min-height: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        html, body {
-            height: 100%;
-        }
-
-        .container-fluid,
-        .row {
-            height: 100%;
-        }
-
-
-        .valid-dropzone {
-            background-color: #d1e7dd;
-            outline: 2px solid #198754;
-        }
-
-        .invalid-dropzone {
-            opacity: 0.35;
-        }
-
-        .favorite-course {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-
-            background-color: #ffffff;
-
-            padding: 5px 6px;
-            margin-bottom: 6px;
-
-            width: 100%;
-
-            font-size: 0.75rem;
-            line-height: 1;
-
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-
-        .favorite-title {
-            font-weight: 600;
-            font-size: 0.8rem;   /* smaller */
-        }
-
-        .favorite-section {
-            font-size: 0.7rem;
-            color: #6c757d;
-            margin-left: 4px;
-        }
-
-        .favorite-times {
-            font-size: 0.65rem;  /* smaller */
-            margin-top: 3px;
-        }
-
-        .favorite-course:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .favorite-course-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .favorite-course-main {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .favorite-title {
-            font-weight: 600;
-            font-size: 0.92rem;
-            color: #212529;
-        }
-
-        .favorite-section {
-            font-size: 0.78rem;
-            color: #6c757d;
-            margin-top: 2px;
-        }
-
-        .favorite-times {
-            font-size: 0.78rem;
-            color: #495057;
-            margin-top: 6px;
-        }
-
-        .favorite-heart-btn {
-            border: none;
-            background: transparent;
-            color: #dc3545;
-            font-size: 1.1rem;
-            line-height: 1;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .favorite-heart-btn:hover {
-            transform: scale(1.08);
-        }
-
-        .favorite-course.in-calendar {
-            background-color: #f8f9fa;
-            border-style: dashed;
-        }
-
-
-        #courseDetailsPanel {
-            min-height: 400px;
-        }
-
-        #courseDetailsContent {
-            font-size: 0.9rem;
-        }
-
-        #courseDetailsContent strong {
-            color: #212529;
-        }
-
-
-
-
-        #favoritesPanel.collapsed {
-            max-height: 60px;
-        }
-
-
-        #favoritesColumn {
-            display: flex;
-        }
-
-        #favoritesPanel {
-            background-color: #f8f9fa;
-            border: 1px solid #ced4da;
-            border-radius: 10px;
-            padding: 12px;
-            min-height: 0;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            transition: max-height 0.3s ease;
-            max-height: 1000px;
-            overflow: hidden;
-        }
-
-        #favoritesPanel.collapsed {
-            max-height: 60px;
-        }
-
-        #favoritesContent {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            max-height: 1000px;
-            opacity: 1;
-            transition: max-height 0.25s ease, opacity 0.25s ease;
-            overflow: visible;
-        }
-
-        #favoritesContent.collapsed {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-        }
-
-        .favorites-list {
-            flex: 1;
-            min-height: 200px;   /* important */
-            padding: 4px;
-        }
-
-        .logo-placeholder {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background-color: #198754;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1rem;
-        }
-
-        .profile-circle {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #e9ecef;
-            color: #212529;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            border: 1px solid #ced4da;
-            transition: background-color 0.2s ease, transform 0.2s ease;
-        }
-
-        .profile-circle:hover {
-            background-color: #dee2e6;
-            transform: scale(1.05);
-        }
-
-
-
-
-
-<!--        .remove-btn {-->
-<!--            position: absolute;-->
-<!--            top: 4px;-->
-<!--            right: 4px;-->
-<!--            padding: 2px 6px;-->
-<!--            font-size: 0.7rem;-->
-<!--            border-radius: 4px;-->
-<!--        }-->
-    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-3 mb-4">
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3 mb-4">
     <div class="container-fluid">
 
         <!-- Logo / Brand -->
-        <a class="navbar-brand d-flex align-items-center gap-2" href="/search">
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/calendar">
             <div class="logo-placeholder">C</div>
             <span class="fw-bold">Cement Scheduler</span>
         </a>
@@ -389,14 +35,17 @@
                     <a class="nav-link" href="/search">Search</a>
                 </li>
                 <li class="nav-item">
+                    <a class="nav-link" href="/calendar">My Schedule</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/example-schedules">Example Schedules</a>
                 </li>
             </ul>
 
             <!-- Profile circle -->
-            <a href="/profile" class="profile-circle text-decoration-none" title="Profile">
-                E
-            </a>
+            <div class="profile-circle" title="Profile">
+                C
+            </div>
         </div>
     </div>
 </nav>
@@ -436,17 +85,6 @@
             <div class="container calendar-wrapper">
                 <div class="row g-3 flex-nowrap">
 
-                    <!-- Time labels column -->
-                    <!--        <div class="col-auto">-->
-                    <!--            <div class="card shadow-sm border-0">-->
-                    <!--                <div class="card-header text-center fw-semibold bg-white">Time</div>-->
-                    <!--                <div class="card-body">-->
-                    <!--                    <div class="time-column" id="timeColumn">-->
-                    <!--                        &lt;!&ndash; JS can fill time labels here &ndash;&gt;-->
-                    <!--                    </div>-->
-                    <!--                </div>-->
-                    <!--            </div>-->
-                    <!--        </div>-->
 
                     <!-- Monday -->
                     <div class="col day-card">
@@ -506,8 +144,21 @@
         <div class="col-2" id="detailsColumn">
             <div id="courseDetailsPanel" class="favorites-panel">
                 <h5>Course Details</h5>
+
                 <div id="courseDetailsContent" class="text-muted">
                     Click a course in the calendar to view details.
+                </div>
+
+                <div id="colorPickerSection" class="mb-3" style="display: none;">
+                    <strong>Color:</strong>
+                    <div class="course-color-picker mt-2">
+                        <button class="color-dot" data-color="#8FB78F" style="background-color:#8FB78F;"></button>
+                        <button class="color-dot" data-color="#CBE6C7" style="background-color:#CBE6C7;"></button>
+                        <button class="color-dot" data-color="#B4CCCF" style="background-color:#B4CCCF;"></button>
+                        <button class="color-dot" data-color="#28536B" style="background-color:#28536B;"></button>
+                        <button class="color-dot" data-color="#F3A5BC" style="background-color:#F3A5BC;"></button>
+                        <button class="color-dot" data-color="#FFC49B" style="background-color:#FFC49B;"></button>
+                    </div>
                 </div>
             </div>
         </div>

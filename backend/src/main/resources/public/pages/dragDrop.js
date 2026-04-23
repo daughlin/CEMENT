@@ -72,8 +72,8 @@ function createFavoriteCourse(course) {
         e.preventDefault();
         e.stopPropagation();
 
-        fetch("/api/unfavorite-course", {
-            method: "POST",
+        fetch("/favorites", {
+            method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 name: course.name,
@@ -163,7 +163,7 @@ function isValidDrop(draggedElement, zone) {
 }
 
 function loadFavorites() {
-    return fetch("/api/favorites")
+    return fetch("/favorites")
         .then(response => response.json())
         .then(courses => {
             console.log("favorites from backend:", courses);
@@ -231,12 +231,6 @@ function setupDraggables() {
 }
 
 
-function targetReset(element) {
-    element.style.transform = "translate(0px, 0px)";
-    element.setAttribute("data-x", 0);
-    element.setAttribute("data-y", 0);
-}
-
 function setupDropzones() {
     interact("#favoritesList").dropzone({
         accept: ".draggable-course",
@@ -264,7 +258,7 @@ function setupDropzones() {
 
             const course = getDraggedCourse(dragged);
 
-            fetch("/api/favorite-course", {
+            fetch("/favorites", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(course)
@@ -273,8 +267,8 @@ function setupDropzones() {
             .then(text => {
                 console.log(text);
 
-                return fetch("/api/remove-course", {
-                    method: "POST",
+                return fetch("/schedule/courses", {
+                    method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ name, section })
                 });
@@ -327,7 +321,7 @@ function setupDropzones() {
             targetReset(dragged);
             clearDropzoneHighlights();
 
-            fetch("/api/add-course", {
+            fetch("/schedule/courses", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(course)

@@ -13,11 +13,13 @@ private String semester;
 private String location;
 private int credits;
 private String description;
+private String displayColor;
 
 
     public Course() {
         professors = new ArrayList<String>();
         times = new ArrayList<Time>();
+        displayColor = "#7A958F";
     }
     /**Constructor
      * @param name
@@ -44,6 +46,8 @@ private String description;
 
         this.times = new ArrayList<Time>();
         this.times.addAll(times);
+
+        displayColor = "#7A958F";
 
     }
 
@@ -76,6 +80,9 @@ private String description;
     public void setLocation(String location) {this.location = location;}
     public int getCredits() {return credits;}
     public void setCredits(int credits) {this.credits = credits;}
+
+    public String getDisplayColor() { return displayColor; }
+    public void setDisplayColor(String color) { this.displayColor = color; }
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
     public String daysHelper() {

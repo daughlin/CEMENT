@@ -70,6 +70,18 @@ public class SearchController {
 
             ArrayList<Course> results = search.getResults();
 
+            Schedule schedule = CalendarViewController.getSchedule();
+
+            ArrayList<Course> validResults = new ArrayList<>();
+
+            for (Course course : results) {
+                if (schedule.canAddCourse(course)) {
+                    validResults.add(course);
+                }
+            }
+
+            ctx.json(validResults);
+
             ctx.json(results);
         });
 

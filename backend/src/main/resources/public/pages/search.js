@@ -1,3 +1,10 @@
+let favoriteCourses = [];
+
+async function loadFavorites() {
+    const response = await fetch("/favorites");
+    favoriteCourses = await response.json();
+}
+
 async function loadFilters() {
         const response = await fetch("/api/filters");
         const data = await response.json();
@@ -21,6 +28,17 @@ async function loadFilters() {
         const ampm = h < 12 ? "AM" : "PM";
 
         return `${hour}:${m.toString().padStart(2, "0")} ${ampm}`;
+    }
+
+
+    function minutesToTimeInput(minutes) {
+        if (minutes === "" || minutes == null) return "";
+
+        const total = Number(minutes);
+        const h = Math.floor(total / 60);
+        const m = total % 60;
+
+        return `${h.toString().padStart(2, "0")}:${m.toString().padStart(2, "0")}`;
     }
 
     function populateDropdown(id, values) {
@@ -51,8 +69,8 @@ async function loadFilters() {
         document.getElementById("deptFilter").value = dept;
         document.getElementById("profFilter").value = prof;
         document.getElementById("creditsFilter").value = credits;
-        document.getElementById("startTimeFilter").value = formatTime(startTime);
-        document.getElementById("endTimeFilter").value = formatTime(endTime);
+        document.getElementById("startTimeFilter").value = minutesToTimeInput(startTime);
+        document.getElementById("endTimeFilter").value = minutesToTimeInput(endTime);
         ``
 
         document.querySelectorAll(".dayFilter").forEach(cb => {
@@ -143,6 +161,45 @@ async function loadFilters() {
             const cardBody = document.createElement("div");
             cardBody.className = "card-body";
 
+            const heartBtn = document.createElement("button");
+            heartBtn.classList.add("favorite-heart-btn");
+            heartBtn.innerHTML = "♥";
+            heartBtn.style.float = "right";
+
+            const isFavorite = favoriteCourses.some(f =>
+                f.name === course.name &&
+                f.section === course.section
+            );
+
+            if (isFavorite) {
+                heartBtn.classList.add("favorited");
+            }
+
+
+            heartBtn.addEventListener("click", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const isFavorite = heartBtn.classList.contains("favorited");
+
+                fetch("/favorites", {
+                    method: isFavorite ? "DELETE" : "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(
+                        isFavorite
+                            ? { name: course.name, section: course.section }
+                            : course
+                    )
+                })
+                .then(response => response.text())
+                .then(() => {
+                    heartBtn.classList.toggle("favorited");
+                })
+                .catch(error => {
+                    console.error("Error toggling favorite:", error);
+                });
+            });
+
             const addButton = document.createElement("button");
             addButton.className = "btn btn-success mt-3";
             addButton.textContent = "Add course";
@@ -181,7 +238,7 @@ async function loadFilters() {
             };
 
 
-
+            cardBody.prepend(heartBtn);
             cardBody.appendChild(showButton);
             cardBody.appendChild(addButton);
             card.appendChild(cardBody);
@@ -191,7 +248,7 @@ async function loadFilters() {
 
     async function addCourse(button, course) {
         try {
-            const response = await fetch("/api/add-course", {
+            const response = await fetch("/schedule/courses", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -271,6 +328,7 @@ async function loadFilters() {
         await loadFilters();
         applyFiltersFromUrl();
         await searchCourses();
+        await loadFavorites();
     }
 
     function roundDownToInterval(minutes, interval) {

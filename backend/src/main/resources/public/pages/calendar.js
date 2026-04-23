@@ -19,7 +19,50 @@ document.addEventListener("DOMContentLoaded", function () {
 //    }
 window.scheduledCourses = new Set();
 
-        fetch("/api/schedule")
+window.currentCourse = null;
+
+
+        document.querySelectorAll(".color-dot").forEach(dot => {
+            dot.addEventListener("click", () => {
+                if (!window.currentCourse) return;
+
+                const color = dot.dataset.color;
+                const course = window.currentCourse;
+
+                fetch("/schedule/courses/color", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: course.name,
+                        section: course.section,
+                        color: color
+                    })
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text);
+
+                    course.displayColor = color;
+
+                    const matchingBlocks = document.querySelectorAll(".course-block");
+                    matchingBlocks.forEach(block => {
+                        if (
+                            block.dataset.name === course.name &&
+                            block.dataset.section === course.section
+                        ) {
+                            block.style.backgroundColor = color;
+                        }
+                    });
+
+                    document.querySelectorAll(".color-dot").forEach(d => {
+                        d.classList.remove("selected");
+                    });
+                    dot.classList.add("selected");
+                });
+            });
+        });
+
+        fetch("/schedule")
             .then(res => res.json())
             .then(courses => {
                 courses.forEach(course => {
@@ -51,10 +94,12 @@ window.scheduledCourses = new Set();
                 for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
                     const row = Math.floor((t - startOfDay) / slotMinutes) + 1;
 
+                    const freeBlockEnd = getFreeBlockEnd(dayCourses, t, endOfDay);
+
                     const params = new URLSearchParams({
                         days: getDayGroup(day),
                         start: t,
-                        end: t + slotMinutes
+                        end: freeBlockEnd
                     });
 
                     const label = document.createElement("div");
@@ -104,6 +149,8 @@ window.scheduledCourses = new Set();
         const div = document.createElement("div");
         div.classList.add("course-block", "draggable-course");
 
+        div.style.backgroundColor = course.displayColor || "#7A958F";
+
         div.dataset.name = course.name;
         div.dataset.section = course.section;
 
@@ -117,7 +164,8 @@ window.scheduledCourses = new Set();
             semester: course.semester,
             location: course.location,
             credits: course.credits,
-            description: course.description || ""
+            description: course.description || "",
+            displayColor: course.displayColor || "#7A958F"
         };
 
         div.dataset.course = JSON.stringify(cleanCourse);
@@ -127,8 +175,8 @@ window.scheduledCourses = new Set();
         div.style.gridColumn = "2";   // only use the right column
 
         div.innerHTML = `
-            <div class="fw-semibold">${course.name} (${course.section})</div>
-            <div>${minutesToTime(course.start)} - ${minutesToTime(course.end)}</div>
+            <div class="course-title">${course.name} (${course.section})</div>
+            <div class="course-time">${minutesToTime(course.start)} - ${minutesToTime(course.end)}</div>
         `;
 
         const detailsButton = document.createElement("button");
@@ -153,12 +201,6 @@ window.scheduledCourses = new Set();
         dayGrid.appendChild(div);
     }
 
-
-
-
-    //This should most likely be in the backend instead of the front end.
-    //Leaving this here for right now until we make a finalized
-    //decision on the format of time in the database
 
     function minutesToTime(minutes) {
         const h = Math.floor(minutes / 60);
@@ -186,8 +228,16 @@ window.scheduledCourses = new Set();
 
 
     function showCourseDetails(course) {
+
+        window.currentCourse = course;
+
         const details = document.getElementById("courseDetailsContent");
+        const colorPickerSection = document.getElementById("colorPickerSection");
         if (!details) return;
+
+        if (colorPickerSection) {
+            colorPickerSection.style.display = "block";
+        }
 
         const isFavorite = favoriteCoursesContains(course);
 
@@ -213,9 +263,18 @@ window.scheduledCourses = new Set();
             </div>
         `;
 
+
+        document.querySelectorAll(".color-dot").forEach(dot => {
+            if (dot.dataset.color === (course.displayColor || "#7A958F")) {
+                dot.classList.add("selected");
+            } else {
+                dot.classList.remove("selected");
+            }
+        });
+
         document.getElementById("detailsRemoveBtn")?.addEventListener("click", () => {
-            fetch("/api/remove-course", {
-                method: "POST",
+            fetch("/schedule/courses", {
+                method: "DELETE",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     name: course.name,
@@ -230,13 +289,13 @@ window.scheduledCourses = new Set();
         });
 
         document.getElementById("detailsFavoriteBtn")?.addEventListener("click", () => {
-            const url = isFavorite ? "/api/unfavorite-course" : "/api/favorite-course";
+            const isRemoving = isFavorite;
 
-            fetch(url, {
-                method: "POST",
+            fetch("/favorites", {
+                method: isRemoving ? "DELETE" : "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(
-                    isFavorite
+                    isRemoving
                         ? { name: course.name, section: course.section }
                         : course
                 )
@@ -248,6 +307,8 @@ window.scheduledCourses = new Set();
             });
         });
     }
+
+
 
     function formatCourseDetailsTimes(times) {
         if (!times || times.length === 0) return "N/A";
@@ -264,6 +325,15 @@ window.scheduledCourses = new Set();
             f.name === course.name &&
             f.section === course.section
         );
+    }
+
+    function getFreeBlockEnd(dayCourses, slotStart, endOfDay) {
+        for (const course of dayCourses) {
+            if (course.start >= slotStart) {
+                return course.start;
+            }
+        }
+        return endOfDay;
     }
 
 
