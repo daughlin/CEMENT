@@ -13,7 +13,7 @@ public class Search {
 
     private String[] query;
     private ArrayList<Filter> filters;
-    private ArrayList<Course> courseList;
+    private static ArrayList<Course> courseList;
     private ArrayList<Course> results;
 
     /**
@@ -57,6 +57,10 @@ public class Search {
 
     public ArrayList<Course> getResults() {
         return results;
+    }
+
+    public ArrayList<Course> getCourseList() {
+        return courseList;
     }
 
     public String getQuery() {

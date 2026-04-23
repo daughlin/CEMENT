@@ -25,5 +25,6 @@ public class Main {
 
         CalendarViewController.registerRoutes(app);
         SearchController.registerRoutes(app);
+        ChatController.registerRoutes(app);
     }
 }
