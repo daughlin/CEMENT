@@ -1,12 +1,23 @@
 document.addEventListener("DOMContentLoaded", function () {
 
     console.log("Calendar page loaded!");
+    console.log("My new code is working");
 
     const startOfDay = 8 * 60;   // 8:00 AM
     const endOfDay = 18 * 60;    // 6:00 PM
 
     // Day columns (must match HTML IDs)
-    const days = { M: [], T: [], W: [], R: [], F: [], S: [] };
+    const days = { M: [], T: [], W: [], R: [], F: [] };
+
+    const timeColumn = document.getElementById("timeColumn");
+    const slotMinutes = 30;
+
+    for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
+        const label = document.createElement("div");
+        label.classList.add("time-label");
+        label.textContent = minutesToTime(t);
+        timeColumn.appendChild(label);
+    }
 
     fetch("/api/schedule")
         .then(response => response.json())
@@ -26,146 +37,85 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             });
 
-            // Process each day
             Object.keys(days).forEach(day => {
-
-                //const dayBox = document.getElementById(day);
-                const dayBox = document.querySelector(`#${day} .card-body`);
-                if (!dayBox) return;
+                const dayGrid = document.querySelector(`#${day} .day-grid`);
+                if (!dayGrid) return;
 
                 const dayCourses = days[day];
 
-                const pixelsPerMinute = dayBox.clientHeight / (endOfDay - startOfDay);
-
-                // Sort courses by start time
                 dayCourses.sort((a, b) => a.start - b.start);
 
-                let previousEnd = startOfDay;
+                const slotMinutes = 30;
 
-                dayCourses.forEach(course => {
+                for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
+                    const slot = document.createElement("div");
+                    slot.classList.add("time-slot", "empty-slot");
 
-                    // If there is free time before this course
-                    if (course.start > previousEnd) {
-                        addFreeBlock(dayBox, day, previousEnd, course.start, pixelsPerMinute);
-                    }
+                    const link = document.createElement("a");
+                    link.classList.add("add-course-link");
 
-                    // Add the course block
-                    addCourse(dayBox, course, pixelsPerMinute);
+                    const params = new URLSearchParams({
+                        days: getDayGroup(day),
+                        start: t,
+                        end: t + slotMinutes
+                    });
 
-                    previousEnd = course.end;
-                });
+                    link.href = `/search?${params.toString()}`;
+                    link.textContent = "+ Add";
 
-                // Free time after the last course
-                if (previousEnd < endOfDay) {
-                    addFreeBlock(dayBox, day, previousEnd, endOfDay, pixelsPerMinute);
+                    slot.appendChild(link);
+                    dayGrid.appendChild(slot);
                 }
 
+                dayCourses.forEach(course => {
+                    addCourse(dayGrid, course);
+                });
             });
 
         });
 
-    // Add a course block
-    function addCourse(dayBox, course, pixelsPerMinute) {
 
-        const dayHeaderHeight = 60;
-        const top = (course.start - startOfDay) * pixelsPerMinute + dayHeaderHeight;
-        const height = (course.end - course.start) * pixelsPerMinute;
+
+    function addCourse(dayGrid, course) {
+
+        const slotMinutes = 30;
+
+        const startRow =
+            Math.floor((course.start - startOfDay) / slotMinutes) + 1;
+
+        const rowSpan =
+            Math.ceil((course.end - course.start) / slotMinutes);
 
         const div = document.createElement("div");
-        div.classList.add("course");
+        div.classList.add("course-block");
 
-        div.style.position = "absolute";
-        div.style.top = top + "px";
-        div.style.height = height + "px";
-        div.style.left = "5px";
-        div.style.right = "5px";
-        div.style.zIndex = "2";
+        div.style.gridRow = `${startRow} / span ${rowSpan}`;
 
-        // Course name
-        const title = document.createElement("div");
-        title.textContent = `${course.name} (${course.section})`;
+        div.innerHTML = `
+            <div class="fw-semibold">${course.name} (${course.section})</div>
+            <div>${minutesToTime(course.start)} - ${minutesToTime(course.end)}</div>
+        `;
 
-        // Time display
-        const time = document.createElement("div");
-        time.textContent =
-            `${minutesToTime(course.start)} - ${minutesToTime(course.end)}`;
-
-        // Remove button
         const button = document.createElement("button");
         button.textContent = "Remove";
-        button.style.marginTop = "5px";
+        button.classList.add("btn", "btn-sm", "btn-light", "mt-1");
 
         button.onclick = () => {
-
-               fetch("/api/remove-course", {
-                   method: "POST",
-                   headers: {
-                       "Content-Type": "application/json"
-                   },
-                   body: JSON.stringify({
-                       name: course.name,
-                       section: course.section
-                   })
-               })
-               .then(() => location.reload()); // refresh calendar
+            fetch("/api/remove-course", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    name: course.name,
+                    section: course.section
+                })
+            }).then(() => location.reload());
         };
 
-        // Append elements
-        div.appendChild(title);
-        div.appendChild(time);
         div.appendChild(button);
 
-        dayBox.appendChild(div);
+        dayGrid.appendChild(div);
     }
 
-    // Add a free slot with a button
-    function addFreeBlock(dayBox, day, start, end, pixelsPerMinute) {
-
-        const dayHeaderHeight = 60;
-        const top = (start - startOfDay) * pixelsPerMinute + dayHeaderHeight;
-        const height = (end - start) * pixelsPerMinute;
-
-        const div = document.createElement("div");
-        div.classList.add("free-slot");
-
-        div.style.position = "absolute";
-        div.style.top = top + "px";
-        div.style.height = height + "px";
-        div.style.left = "5px";
-        div.style.right = "5px";
-        div.style.zIndex = "1";
-
-        // Time label
-        const time = document.createElement("div");
-        time.textContent = `${minutesToTime(start)} - ${minutesToTime(end)}`;
-
-        // Button
-        const link = document.createElement("a");
-        link.textContent = "view courses";
-
-        const interval = 15;
-
-        const roundedStart = roundUpToInterval(start, interval);
-        const roundedEnd = roundDownToInterval(end, interval);
-
-        const groupedDays = getDayGroup(day);
-
-        if (roundedStart >= roundedEnd) {
-            link.href = `/search?days=${groupedDays}`;
-        } else {
-            const params = new URLSearchParams({
-                days: groupedDays,
-                start: roundedStart,
-                end: roundedEnd
-            });
-
-            link.href = `/search?${params.toString()}`;
-        }
-
-        div.appendChild(time);
-        div.appendChild(link);
-        dayBox.appendChild(div);
-    }
 
 
     //This should most likely be in the backend instead of the front end.
@@ -182,14 +132,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const minStr = m.toString().padStart(2, "0");
 
         return `${hour12}:${minStr} ${ampm}`;
-    }
-
-    function roundUpToInterval(minutes, interval) {
-        return Math.ceil(minutes / interval) * interval;
-    }
-
-    function roundDownToInterval(minutes, interval) {
-        return Math.floor(minutes / interval) * interval;
     }
 
     function getDayGroup(day) {

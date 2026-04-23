@@ -6,11 +6,70 @@ document.addEventListener("DOMContentLoaded", function () {
     const endOfDay = 18 * 60;    // 6:00 PM
 
     // Day columns (must match HTML IDs)
-    const days = { M: [], T: [], W: [], R: [], F: [], S: [] };
+    const days = { M: [], T: [], W: [], R: [], F: [] };
 
-    fetch("/api/schedule")
-        .then(response => response.json())
-        .then(courses => {
+    const timeColumn = document.getElementById("timeColumn");
+    const slotMinutes = 30;
+
+//    for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
+//        const label = document.createElement("div");
+//        label.classList.add("time-label");
+//        label.textContent = minutesToTime(t);
+//        timeColumn.appendChild(label);
+//    }
+window.scheduledCourses = new Set();
+
+window.currentCourse = null;
+
+
+        document.querySelectorAll(".color-dot").forEach(dot => {
+            dot.addEventListener("click", () => {
+                if (!window.currentCourse) return;
+
+                const color = dot.dataset.color;
+                const course = window.currentCourse;
+
+                fetch("/schedule/courses/color", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: course.name,
+                        section: course.section,
+                        color: color
+                    })
+                })
+                .then(response => response.text())
+                .then(text => {
+                    console.log(text);
+
+                    course.displayColor = color;
+
+                    const matchingBlocks = document.querySelectorAll(".course-block");
+                    matchingBlocks.forEach(block => {
+                        if (
+                            block.dataset.name === course.name &&
+                            block.dataset.section === course.section
+                        ) {
+                            block.style.backgroundColor = color;
+                        }
+                    });
+
+                    document.querySelectorAll(".color-dot").forEach(d => {
+                        d.classList.remove("selected");
+                    });
+                    dot.classList.add("selected");
+                });
+            });
+        });
+
+        fetch("/schedule")
+            .then(res => res.json())
+            .then(courses => {
+                courses.forEach(course => {
+                    const key = `${course.name}|${course.section}`;
+                    window.scheduledCourses.add(key);
+                });
+
 
             // Assign courses to their day arrays
             courses.forEach(course => {
@@ -18,158 +77,130 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (!days[time.day]) return;
 
                     days[time.day].push({
-                        name: course.name,
-                        section: course.section,
+                        ...course,
                         start: time.startTime,
                         end: time.endTime
                     });
                 });
             });
 
-            // Process each day
             Object.keys(days).forEach(day => {
-
-                const dayBox = document.getElementById(day);
-                if (!dayBox) return;
+                const dayGrid = document.querySelector(`#${day} .day-grid`);
+                if (!dayGrid) return;
 
                 const dayCourses = days[day];
-
-                const pixelsPerMinute = dayBox.clientHeight / (endOfDay - startOfDay);
-
-                // Sort courses by start time
                 dayCourses.sort((a, b) => a.start - b.start);
 
-                let previousEnd = startOfDay;
+                for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
+                    const row = Math.floor((t - startOfDay) / slotMinutes) + 1;
 
-                dayCourses.forEach(course => {
+                    const freeBlockEnd = getFreeBlockEnd(dayCourses, t, endOfDay);
 
-                    // If there is free time before this course
-                    if (course.start > previousEnd) {
-                        addFreeBlock(dayBox, day, previousEnd, course.start, pixelsPerMinute);
-                    }
+                    const params = new URLSearchParams({
+                        days: getDayGroup(day),
+                        start: t,
+                        end: freeBlockEnd
+                    });
 
-                    // Add the course block
-                    addCourse(dayBox, course, pixelsPerMinute);
+                    const label = document.createElement("div");
+                    label.classList.add("time-label");
+                    label.textContent = minutesToTime(t);
+                    label.style.gridRow = `${row}`;
+                    label.style.gridColumn = "1";
 
-                    previousEnd = course.end;
-                });
+                    const dropCell = document.createElement("div");
+                    dropCell.classList.add("calendar-dropzone");
+                    dropCell.dataset.day = day;
+                    dropCell.dataset.start = t;
+                    dropCell.dataset.end = t + slotMinutes;
+                    dropCell.style.gridRow = `${row}`;
+                    dropCell.style.gridColumn = "2";
 
-                // Free time after the last course
-                if (previousEnd < endOfDay) {
-                    addFreeBlock(dayBox, day, previousEnd, endOfDay, pixelsPerMinute);
+                    const link = document.createElement("a");
+                    link.classList.add("add-course-link");
+                    link.href = `/search?${params.toString()}`;
+                    link.textContent = "+ Add";
+
+                    dropCell.appendChild(link);
+
+                    dayGrid.appendChild(label);
+                    dayGrid.appendChild(dropCell);
                 }
 
+                dayCourses.forEach(course => {
+                    addCourse(dayGrid, course);
+                });
             });
 
         });
 
-    // Add a course block
-    function addCourse(dayBox, course, pixelsPerMinute) {
 
-        const dayHeaderHeight = 60;
-        const top = (course.start - startOfDay) * pixelsPerMinute + dayHeaderHeight;
-        const height = (course.end - course.start) * pixelsPerMinute;
+
+    function addCourse(dayGrid, course) {
+
+        const slotMinutes = 30;
+
+        const startRow =
+            Math.floor((course.start - startOfDay) / slotMinutes) + 1;
+
+        const rowSpan =
+            Math.ceil((course.end - course.start) / slotMinutes);
 
         const div = document.createElement("div");
-        div.classList.add("course");
+        div.classList.add("course-block", "draggable-course");
 
-        div.style.position = "absolute";
-        div.style.top = top + "px";
-        div.style.height = height + "px";
-        div.style.left = "5px";
-        div.style.right = "5px";
-        div.style.zIndex = "2";
+        div.style.backgroundColor = course.displayColor || "#7A958F";
 
-        // Course name
-        const title = document.createElement("div");
-        title.textContent = `${course.name} (${course.section})`;
+        div.dataset.name = course.name;
+        div.dataset.section = course.section;
 
-        // Time display
-        const time = document.createElement("div");
-        time.textContent =
-            `${minutesToTime(course.start)} - ${minutesToTime(course.end)}`;
-
-        // Remove button
-        const button = document.createElement("button");
-        button.textContent = "Remove";
-        button.style.marginTop = "5px";
-
-        button.onclick = () => {
-
-               fetch("/api/remove-course", {
-                   method: "POST",
-                   headers: {
-                       "Content-Type": "application/json"
-                   },
-                   body: JSON.stringify({
-                       name: course.name,
-                       section: course.section
-                   })
-               })
-               .then(() => location.reload()); // refresh calendar
+        const cleanCourse = {
+            name: course.name,
+            courseCode: course.courseCode,
+            section: course.section,
+            department: course.department,
+            professors: course.professors,
+            times: course.times,
+            semester: course.semester,
+            location: course.location,
+            credits: course.credits,
+            description: course.description || "",
+            displayColor: course.displayColor || "#7A958F"
         };
 
-        // Append elements
-        div.appendChild(title);
-        div.appendChild(time);
-        div.appendChild(button);
+        div.dataset.course = JSON.stringify(cleanCourse);
+        div.dataset.times = JSON.stringify(course.times || []);
 
-        dayBox.appendChild(div);
+        div.style.gridRow = `${startRow} / span ${rowSpan}`;
+        div.style.gridColumn = "2";   // only use the right column
+
+        div.innerHTML = `
+            <div class="course-title">${course.name} (${course.section})</div>
+            <div class="course-time">${minutesToTime(course.start)} - ${minutesToTime(course.end)}</div>
+        `;
+
+        const detailsButton = document.createElement("button");
+        detailsButton.type = "button";
+        detailsButton.textContent = "Details";
+        detailsButton.classList.add("btn", "btn-sm", "btn-outline-light", "mt-1", "me-1");
+
+        detailsButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            showCourseDetails(cleanCourse);
+        });
+
+        const removeButton = document.createElement("button");
+        removeButton.type = "button";
+        removeButton.textContent = "Remove";
+        removeButton.classList.add("btn", "btn-sm", "btn-outline-danger", "mt-1", "remove-btn");
+
+        div.appendChild(detailsButton);
+
+        dayGrid.appendChild(div);
     }
 
-    // Add a free slot with a button
-    function addFreeBlock(dayBox, day, start, end, pixelsPerMinute) {
-
-        const dayHeaderHeight = 60;
-        const top = (start - startOfDay) * pixelsPerMinute + dayHeaderHeight;
-        const height = (end - start) * pixelsPerMinute;
-
-        const div = document.createElement("div");
-        div.classList.add("free-slot");
-
-        div.style.position = "absolute";
-        div.style.top = top + "px";
-        div.style.height = height + "px";
-        div.style.left = "5px";
-        div.style.right = "5px";
-        div.style.zIndex = "1";
-
-        // Time label
-        const time = document.createElement("div");
-        time.textContent = `${minutesToTime(start)} - ${minutesToTime(end)}`;
-
-        // Button
-        const link = document.createElement("a");
-        link.textContent = "view courses";
-
-        const interval = 15;
-
-        const roundedStart = roundUpToInterval(start, interval);
-        const roundedEnd = roundDownToInterval(end, interval);
-
-        const groupedDays = getDayGroup(day);
-
-        if (roundedStart >= roundedEnd) {
-            link.href = `/search?days=${groupedDays}`;
-        } else {
-            const params = new URLSearchParams({
-                days: groupedDays,
-                start: roundedStart,
-                end: roundedEnd
-            });
-
-            link.href = `/search?${params.toString()}`;
-        }
-
-        div.appendChild(time);
-        div.appendChild(link);
-        dayBox.appendChild(div);
-    }
-
-
-    //This should most likely be in the backend instead of the front end.
-    //Leaving this here for right now until we make a finalized
-    //decision on the format of time in the database
 
     function minutesToTime(minutes) {
         const h = Math.floor(minutes / 60);
@@ -183,14 +214,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${hour12}:${minStr} ${ampm}`;
     }
 
-    function roundUpToInterval(minutes, interval) {
-        return Math.ceil(minutes / interval) * interval;
-    }
-
-    function roundDownToInterval(minutes, interval) {
-        return Math.floor(minutes / interval) * interval;
-    }
-
     function getDayGroup(day) {
         if (day === "M" || day === "W" || day === "F") {
             return "MWF";
@@ -201,6 +224,116 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         return day;
+    }
+
+
+    function showCourseDetails(course) {
+
+        window.currentCourse = course;
+
+        const details = document.getElementById("courseDetailsContent");
+        const colorPickerSection = document.getElementById("colorPickerSection");
+        if (!details) return;
+
+        if (colorPickerSection) {
+            colorPickerSection.style.display = "block";
+        }
+
+        const isFavorite = favoriteCoursesContains(course);
+
+        details.innerHTML = `
+            <div class="mb-3">
+                <div class="fw-bold fs-5">${course.name}</div>
+                <div class="text-muted">${course.courseCode || ""} (${course.section})</div>
+            </div>
+
+            <div class="mb-2"><strong>Department:</strong> ${course.department || ""}</div>
+            <div class="mb-2"><strong>Credits:</strong> ${course.credits ?? ""}</div>
+            <div class="mb-2"><strong>Semester:</strong> ${course.semester || ""}</div>
+            <div class="mb-2"><strong>Location:</strong> ${course.location || "N/A"}</div>
+            <div class="mb-2"><strong>Professor(s):</strong> ${(course.professors || []).join(", ") || "N/A"}</div>
+            <div class="mb-3"><strong>Times:</strong><br>${formatCourseDetailsTimes(course.times)}</div>
+            <div class="mb-3"><strong>Description:</strong><br>${course.description || "No description available."}</div>
+
+            <div class="d-grid gap-2">
+                <button id="detailsRemoveBtn" class="btn btn-outline-danger btn-sm">Remove from Calendar</button>
+                <button id="detailsFavoriteBtn" class="btn btn-outline-secondary btn-sm">
+                    ${isFavorite ? "Unfavorite" : "Favorite"}
+                </button>
+            </div>
+        `;
+
+
+        document.querySelectorAll(".color-dot").forEach(dot => {
+            if (dot.dataset.color === (course.displayColor || "#7A958F")) {
+                dot.classList.add("selected");
+            } else {
+                dot.classList.remove("selected");
+            }
+        });
+
+        document.getElementById("detailsRemoveBtn")?.addEventListener("click", () => {
+            fetch("/schedule/courses", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    name: course.name,
+                    section: course.section
+                })
+            })
+            .then(response => response.text())
+            .then(text => {
+                console.log(text);
+                location.reload();
+            });
+        });
+
+        document.getElementById("detailsFavoriteBtn")?.addEventListener("click", () => {
+            const isRemoving = isFavorite;
+
+            fetch("/favorites", {
+                method: isRemoving ? "DELETE" : "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(
+                    isRemoving
+                        ? { name: course.name, section: course.section }
+                        : course
+                )
+            })
+            .then(response => response.text())
+            .then(text => {
+                console.log(text);
+                location.reload();
+            });
+        });
+    }
+
+
+
+    function formatCourseDetailsTimes(times) {
+        if (!times || times.length === 0) return "N/A";
+
+        return times
+            .map(t => `${t.day} ${minutesToTime(t.startTime)} - ${minutesToTime(t.endTime)}`)
+            .join("<br>");
+    }
+
+    function favoriteCoursesContains(course) {
+        const favorites = window.favoriteCourses || [];
+
+        return favorites.some(f =>
+            f.name === course.name &&
+            f.section === course.section
+        );
+    }
+
+    function getFreeBlockEnd(dayCourses, slotStart, endOfDay) {
+        for (const course of dayCourses) {
+            if (course.start >= slotStart) {
+                return course.start;
+            }
+        }
+        return endOfDay;
     }
 
 

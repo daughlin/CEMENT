@@ -4,123 +4,175 @@
     <meta charset="UTF-8">
     <title>Course Scheduler</title>
 
-    <style>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        body{
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-
-        h1{
-            margin-bottom: 20px;
-        }
-
-        /* container for all days */
-
-        .calendar {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .day {
-            flex: 1;              /* all days share equal width */
-            min-height: 1000px;
-            position: relative;
-            border: 2px solid #333;
-            border-radius: 8px;
-            overflow: hidden;
-
-        }
+    <link rel="stylesheet" href="style.css">
 
 
-        .course {
-            background: green;
-            border: 1px solid #333;
-            border-radius: 6px;
-
-            padding: 10px;
-            font-size: 14px;
-
-            box-sizing: border-box;
-        }
-
-
-        .free-slot {
-            background: #f7f7f7;
-            border: 1px dashed #aaa;
-
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-
-            font-size: 10px;
-        }
-
-        /* where course text will go */
-        .schedule{
-            flex-grow: 1;
-            margin: 10px 0;
-        }
-
-        /* buttons */
-        button{
-            padding: 6px;
-            cursor: pointer;
-        }
-
-        .free-slot a {
-            color: #555;
-            font-size: 13px;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-
-
-
-
-    </style>
 </head>
 
 <body>
 
-<button
-        onclick="window.location.href='/search'"
-        style="position: absolute; top: 20px; left: 20px; padding: 10px 15px; cursor: pointer; background-color: #6c757d; color: white; border: none; border-radius: 4px;">
-    Return to search
-</button>
+<nav class="navbar navbar-expand-lg navbar-light shadow-sm px-3 mb-4">
+    <div class="container-fluid">
 
-<h1>My Schedule</h1>
+        <!-- Logo / Brand -->
+        <a class="navbar-brand d-flex align-items-center gap-2" href="/calendar">
+            <div class="logo-placeholder">C</div>
+            <span class="fw-bold">Cement Scheduler</span>
+        </a>
 
-<div class="calendar">
+        <!-- Mobile toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="day" id="M">
-        <div><h3>Monday</h3></div>
+        <!-- Nav links -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="/search">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/calendar">My Schedule</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/example-schedules">Example Schedules</a>
+                </li>
+            </ul>
+
+            <!-- Profile circle -->
+            <div class="profile-circle" title="Profile">
+                C
+            </div>
+        </div>
     </div>
-
-    <div class="day" id="T">
-        <div><h3>Tuesday</h3></div>
-    </div>
-
-    <div class="day" id="W">
-        <div><h3>Wednesday</h3></div>
-    </div>
-
-    <div class="day" id="R">
-        <div><h3>Thursday</h3></div>
-    </div>
-
-    <div class="day" id="F">
-        <div><h3>Friday</h3></div>
-    </div>
+</nav>
 
 
+<!-- Title -->
+<div class="container text-center mb-4">
+    <h1 class="fw-bold">My Schedule</h1>
 </div>
 
-    <script src="chat.js"></script>
-    <script src="calendar.js"></script>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- LEFT: Favorites -->
+        <div class="col-2" id="favoritesColumn">
+            <div id="favoritesPanel" class="favorites-panel">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="mb-0">Favorites</h5>
+                    <button id="toggleFavoritesBtn" class="btn btn-outline-secondary btn-sm" type="button">
+                        Hide
+                    </button>
+                    <br>
+                    <br>
+
+                </div>
+
+                <div id="favoritesContent">
+                    <div id="favoritesList" class="favorites-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Middle: Calendar -->
+        <div class="col-8" id="calendarColumn">
+            <!-- Calendar -->
+            <div class="container calendar-wrapper">
+                <div class="row g-3 flex-nowrap">
+
+
+                    <!-- Monday -->
+                    <div class="col day-card">
+                        <div class="card shadow-sm h-100" id="M">
+                            <div class="card-header text-center fw-semibold">Monday</div>
+                            <div class="card-body">
+                                <div class="day-grid" data-day="M"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tuesday -->
+                    <div class="col day-card">
+                        <div class="card shadow-sm h-100" id="T">
+                            <div class="card-header text-center fw-semibold">Tuesday</div>
+                            <div class="card-body">
+                                <div class="day-grid" data-day="T"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wednesday -->
+                    <div class="col day-card">
+                        <div class="card shadow-sm h-100" id="W">
+                            <div class="card-header text-center fw-semibold">Wednesday</div>
+                            <div class="card-body">
+                                <div class="day-grid" data-day="W"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Thursday -->
+                    <div class="col day-card">
+                        <div class="card shadow-sm h-100" id="R">
+                            <div class="card-header text-center fw-semibold">Thursday</div>
+                            <div class="card-body">
+                                <div class="day-grid" data-day="R"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Friday -->
+                    <div class="col day-card">
+                        <div class="card shadow-sm h-100" id="F">
+                            <div class="card-header text-center fw-semibold">Friday</div>
+                            <div class="card-body">
+                                <div class="day-grid" data-day="F"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Details -->
+        <div class="col-2" id="detailsColumn">
+            <div id="courseDetailsPanel" class="favorites-panel">
+                <h5>Course Details</h5>
+
+                <div id="courseDetailsContent" class="text-muted">
+                    Click a course in the calendar to view details.
+                </div>
+
+                <div id="colorPickerSection" class="mb-3" style="display: none;">
+                    <strong>Color:</strong>
+                    <div class="course-color-picker mt-2">
+                        <button class="color-dot" data-color="#8FB78F" style="background-color:#8FB78F;"></button>
+                        <button class="color-dot" data-color="#CBE6C7" style="background-color:#CBE6C7;"></button>
+                        <button class="color-dot" data-color="#B4CCCF" style="background-color:#B4CCCF;"></button>
+                        <button class="color-dot" data-color="#28536B" style="background-color:#28536B;"></button>
+                        <button class="color-dot" data-color="#F3A5BC" style="background-color:#F3A5BC;"></button>
+                        <button class="color-dot" data-color="#FFC49B" style="background-color:#FFC49B;"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script src="calendar.js"></script>
+<script src="dragDrop.js"></script>
+<script src="chat.js"></script>
+
 </body>
 </html>
