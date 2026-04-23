@@ -336,6 +336,26 @@ window.currentCourse = null;
         return endOfDay;
     }
 
+    async function downloadPDF() {
+
+        const { jsPDF } = window.jspdf;
+
+        const calendar = document.querySelector(".calendar-wrapper");
+
+        const canvas = await html2canvas(calendar);
+
+        const imgData = canvas.toDataURL("image/png");
+
+        const pdf = new jsPDF({
+            orientation: "landscape",
+            unit: "px",
+            format: [canvas.width, canvas.height]
+        });
+
+        pdf.addImage(imgData, "PNG", 0, 0);
+
+        pdf.save("schedule.pdf");
+    }
 
 
 });
