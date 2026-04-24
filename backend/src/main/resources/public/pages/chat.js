@@ -244,18 +244,29 @@ document.addEventListener("DOMContentLoaded", function () {
         const div = document.createElement("div");
         div.className = "chat-course";
 
+        const courseKey = `${course.name}|${course.section}`;
+        const alreadyScheduled =
+            window.scheduledCourses && window.scheduledCourses.has(courseKey);
+
         div.innerHTML = `
             <strong>${course.courseCode}</strong> - ${course.name}<br>
+            Section ${course.section}<br>
             ${course.credits} credits<br>
             ${course.professors?.[0] || ""}<br>
-            <button type="button" class="chat-add-course-btn">Add course</button>
+            <button type="button" class="chat-add-course-btn">
+                ${alreadyScheduled ? "Already added" : "Add course"}
+            </button>
         `;
 
         const button = div.querySelector(".chat-add-course-btn");
 
+        if (alreadyScheduled) {
+            button.disabled = true;
+        }
+
         button.addEventListener("click", async function () {
             try {
-                const response = await fetch("/api/add-course", {
+                const response = await fetch("/schedule/courses", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -266,6 +277,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (response.ok) {
                     button.textContent = "Added ✓";
                     button.disabled = true;
+
+                    if (window.scheduledCourses) {
+                        window.scheduledCourses.add(courseKey);
+                    }
+
+                    if (typeof window.refreshSchedule === "function") {
+                        window.refreshSchedule();
+                    }
                 } else {
                     const errorText = await response.text();
                     console.error("Could not add course:", errorText);
