@@ -2,12 +2,11 @@ package edu.gcc.cement;
 
 import io.javalin.Javalin;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class CalendarViewController {
 
-    private static final Schedule schedule = buildInitialSchedule();
+    private static Schedule schedule = ScheduleStorage.loadSchedule();
 
     public static void registerRoutes(Javalin app) {
 
@@ -34,6 +33,8 @@ public class CalendarViewController {
                 }
 
                 schedule.addCourse(newCourse);
+                ScheduleStorage.saveSchedule(schedule);
+
                 ctx.status(200).result("Course added");
 
             } catch (CourseTimeConflictsException e) {
@@ -52,8 +53,10 @@ public class CalendarViewController {
                 String section = data.get("section");
 
                 schedule.removeCourseByNameAndSection(name, section);
+                ScheduleStorage.saveSchedule(schedule);
 
                 ctx.result("Course removed");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ctx.status(500).result("Internal Server Error");
@@ -80,7 +83,9 @@ public class CalendarViewController {
                     return;
                 }
 
+                ScheduleStorage.saveSchedule(schedule);
                 ctx.result("Course favorited");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ctx.status(500).result("Server Error");
@@ -88,14 +93,21 @@ public class CalendarViewController {
         });
 
         app.delete("/favorites", ctx -> {
-            Map<String, String> data = ctx.bodyAsClass(Map.class);
+            try {
+                Map<String, String> data = ctx.bodyAsClass(Map.class);
 
-            String name = data.get("name");
-            String section = data.get("section");
+                String name = data.get("name");
+                String section = data.get("section");
 
-            schedule.unfavoriteCourse(name, section);
+                schedule.unfavoriteCourse(name, section);
+                ScheduleStorage.saveSchedule(schedule);
 
-            ctx.result("Course unfavorited");
+                ctx.result("Course unfavorited");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                ctx.status(500).result("Server Error");
+            }
         });
 
         app.patch("/schedule/courses/color", ctx -> {
@@ -107,80 +119,16 @@ public class CalendarViewController {
                 String color = data.get("color");
 
                 schedule.updateCourseColor(name, section, color);
+                ScheduleStorage.saveSchedule(schedule);
 
                 ctx.result("Course color updated");
+
             } catch (Exception e) {
                 e.printStackTrace();
                 ctx.status(500).result("Internal Server Error");
             }
         });
     }
-
-    private static Schedule buildInitialSchedule() {
-        Schedule schedule = new Schedule("2023_Fall");
-
-        ArrayList<String> professors = new ArrayList<>();
-        professors.add("Graybill, Keith B.");
-
-        ArrayList<Time> times1 = new ArrayList<>();
-        times1.add(new Time("T", 9 * 60, 10 * 60));
-        times1.add(new Time("R", 9 * 60, 10 * 60));
-
-        ArrayList<Time> times2 = new ArrayList<>();
-        times2.add(new Time("T", 11 * 60, 12 * 60));
-        times2.add(new Time("R", 8 * 60, 9 * 60));
-        times2.add(new Time("F", 9 * 60, 10 * 60));
-
-        ArrayList<Time> favoriteTimes = new ArrayList<>();
-        favoriteTimes.add(new Time("T", 9 * 60, 10 * 60));
-        favoriteTimes.add(new Time("R", 9 * 60, 10 * 60));
-
-        try {
-            schedule.addCourse(new Course(
-                    "PRINCIPLES OF ACCOUNTING I",
-                    "ACCT 201",
-                    "A",
-                    "ACCT",
-                    professors,
-                    times1,
-                    "2023_Fall",
-                    "SHAL 316",
-                    3,
-                    ""
-            ));
-
-            schedule.addCourse(new Course(
-                    "Comp Sci Class",
-                    "COMP 240",
-                    "B",
-                    "COMP",
-                    professors,
-                    times2,
-                    "2023_Fall",
-                    "STEM 100",
-                    3,
-                    ""
-            ));
-
-            schedule.favoriteCourse(new Course(
-                    "Art Class",
-                    "ART 201",
-                    "B",
-                    "ART",
-                    professors,
-                    favoriteTimes,
-                    "2023_Fall",
-                    "SHAL 316",
-                    3,
-                    ""
-            ));
-        } catch (CourseTimeConflictsException e) {
-            throw new RuntimeException("Error building initial schedule", e);
-        }
-
-        return schedule;
-    }
-
 
     public static Schedule getSchedule() {
         return schedule;
