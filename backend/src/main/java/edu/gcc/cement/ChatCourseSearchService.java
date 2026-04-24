@@ -4,8 +4,11 @@ import java.util.ArrayList;
 
 public class ChatCourseSearchService {
 
-    public ChatResponse handle(String message) {
+    public ChatResponse handle(ChatRequest request) {
         try {
+            String message = request.getMessage();
+            String semester = request.getSemester();
+
             Search baseSearch = new Search("", new ArrayList<>());
             ArrayList<Course> courses = baseSearch.getCourseList();
 
@@ -18,13 +21,17 @@ public class ChatCourseSearchService {
             }
 
             ChatFilterParser parser = new ChatFilterParser(courses);
-
-            // 👇 NEW: use richer parser output
             ChatSearchRequest chatRequest = parser.parse(message);
+
+            ArrayList<Filter> filters = new ArrayList<>(chatRequest.getFilters());
+
+            if (semester != null && !semester.isBlank()) {
+                filters.add(new Filter(semester, Type.SEM));
+            }
 
             Search actualSearch = new Search(
                     chatRequest.getQuery(),
-                    chatRequest.getFilters(),
+                    filters,
                     courses
             );
 
@@ -32,8 +39,9 @@ public class ChatCourseSearchService {
 
             String reply = summarizeResults(
                     results,
-                    chatRequest.getFilters(),
-                    chatRequest.getQuery()
+                    filters,
+                    chatRequest.getQuery(),
+                    semester
             );
 
             return new ChatResponse(
@@ -54,11 +62,11 @@ public class ChatCourseSearchService {
 
     private String summarizeResults(ArrayList<Course> results,
                                     ArrayList<Filter> filters,
-                                    String query) {
+                                    String query,
+                                    String semester) {
 
         StringBuilder sb = new StringBuilder();
 
-        // ✅ Show parsed query
         sb.append("Parsed query: ");
         if (query == null || query.isBlank()) {
             sb.append("none");
@@ -67,7 +75,14 @@ public class ChatCourseSearchService {
         }
         sb.append(". ");
 
-        // ✅ Show parsed filters
+        sb.append("Semester: ");
+        if (semester == null || semester.isBlank()) {
+            sb.append("none");
+        } else {
+            sb.append(semester);
+        }
+        sb.append(". ");
+
         sb.append("Parsed filters: ");
         if (filters == null || filters.isEmpty()) {
             sb.append("none");
@@ -82,7 +97,6 @@ public class ChatCourseSearchService {
         }
         sb.append(". ");
 
-        // ✅ Show results
         if (results == null || results.isEmpty()) {
             sb.append("I couldn’t find any courses matching that request.");
             return sb.toString();

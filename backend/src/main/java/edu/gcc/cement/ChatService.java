@@ -26,7 +26,7 @@ public class ChatService {
 
         return switch (intent) {
             case APP_HELP -> handleAppHelp(message);
-            case COURSE_SEARCH -> handleCourseSearch(message);
+            case COURSE_SEARCH -> handleCourseSearch(request);
             case SCHEDULE_SUGGESTION -> handleScheduleSuggestion(message);
             default -> new ChatResponse(
                     "I’m not sure what you mean yet. Try asking for help, course search, or a schedule suggestion.",
@@ -41,8 +41,8 @@ public class ChatService {
         return new ChatResponse(reply, ChatIntent.APP_HELP.name(), null);
     }
 
-    private ChatResponse handleCourseSearch(String message) {
-        return chatCourseSearchService.handle(message);
+    private ChatResponse handleCourseSearch(ChatRequest request) {
+        return chatCourseSearchService.handle(request);
     }
 
     private ChatResponse handleScheduleSuggestion(String message) {

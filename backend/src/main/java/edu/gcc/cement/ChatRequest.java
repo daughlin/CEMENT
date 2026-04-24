@@ -4,6 +4,7 @@ public class ChatRequest {
 
     private String message;
     private String studentId;
+    private String semester;
 
     public ChatRequest() {}
 
@@ -21,5 +22,13 @@ public class ChatRequest {
 
     public void setStudentId(String studentId) {
         this.studentId = studentId;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
 }
