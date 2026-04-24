@@ -2,58 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Select Semester</title>
+    <title>Select Semester and Major</title>
+
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 100px; }
-        select { padding: 10px; font-size: 16px; margin-top: 20px; min-width: 200px; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .field {
+            margin: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            min-width: 250px;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            margin-top: 30px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
     </style>
 </head>
+
 <body>
 
-<h1>Welcome! Please select a semester</h1>
+<h1>Welcome! Please select your semester and major</h1>
 
-<select id="semesterSelect">
-    <option value="" disabled selected>Loading semesters...</option>
-</select>
+<div class="field">
+    <select id="semesterSelect">
+        <option value="" disabled selected>Loading semesters...</option>
+    </select>
+</div>
+
+<div class="field">
+    <select id="majorSelect">
+        <option value="" disabled selected>Loading majors...</option>
+    </select>
+</div>
+
+<button id="continueBtn" disabled>Continue</button>
 
 <script>
-    // Helper to make "2023_Fall" look like "Fall 2023"
     function formatSemester(sem) {
-        if (!sem.includes('_')) return sem;
-        const [year, season] = sem.split('_');
-        return `${season} ${year}`;
+        if (!sem.includes("_")) return sem;
+
+        const parts = sem.split("_");
+        const year = parts[0];
+        const season = parts[1];
+
+        return season + " " + year;
     }
 
-    document.addEventListener("DOMContentLoaded", async function() {
-        const select = document.getElementById("semesterSelect");
+    function checkSelections() {
+        const semester = document.getElementById("semesterSelect").value;
+        const major = document.getElementById("majorSelect").value;
+        const button = document.getElementById("continueBtn");
+
+        button.disabled = !(semester && major);
+    }
+
+    async function loadSemesters() {
+        const semesterSelect = document.getElementById("semesterSelect");
 
         try {
             const response = await fetch("/api/semesters");
-            if (!response.ok) throw new Error("Failed to fetch");
+
+            if (!response.ok) {
+                throw new Error("Failed to fetch semesters");
+            }
 
             const semesters = await response.json();
 
-            // Clear the "Loading..." message
-            select.innerHTML = '<option value="" disabled selected>Choose a semester...</option>';
+            semesterSelect.innerHTML = '<option value="" disabled selected>Choose a semester...</option>';
 
-            // Populate the dropdown with options from the database
-            semesters.forEach(sem => {
-                const opt = document.createElement("option");
-                opt.value = sem;
-                opt.textContent = formatSemester(sem);
-                select.appendChild(opt);
+            semesters.forEach(function(sem) {
+                const option = document.createElement("option");
+                option.value = sem;
+                option.textContent = formatSemester(sem);
+                semesterSelect.appendChild(option);
             });
 
         } catch (error) {
-            console.error("Error:", error);
-            select.innerHTML = '<option value="" disabled>Error loading options</option>';
+            console.error("Semester error:", error);
+            semesterSelect.innerHTML = '<option value="" disabled>Error loading semesters</option>';
         }
-    });
+    }
 
-    // Handle the redirect when a selection is made
-    document.getElementById("semesterSelect").addEventListener("change", function(e) {
-        sessionStorage.setItem("selectedSemester", e.target.value);
-        window.location.href = "/search";
+    async function loadMajors() {
+        const majorSelect = document.getElementById("majorSelect");
+
+        try {
+            const response = await fetch("/api/majors");
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error("Failed to fetch majors: " + response.status + " " + errorText);
+            }
+
+            const majors = await response.json();
+
+            majorSelect.innerHTML = '<option value="" disabled selected>Choose a major...</option>';
+
+            majors.forEach(function(major) {
+                const option = document.createElement("option");
+                option.value = major;
+                option.textContent = major;
+                majorSelect.appendChild(option);
+            });
+
+        } catch (error) {
+            console.error("Major error:", error);
+            majorSelect.innerHTML = '<option value="" disabled>Error loading majors</option>';
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", async function() {
+        await loadSemesters();
+        await loadMajors();
+
+        document.getElementById("semesterSelect").addEventListener("change", checkSelections);
+        document.getElementById("majorSelect").addEventListener("change", checkSelections);
+
+        document.getElementById("continueBtn").addEventListener("click", function() {
+            const semester = document.getElementById("semesterSelect").value;
+            const major = document.getElementById("majorSelect").value;
+
+            sessionStorage.setItem("selectedSemester", semester);
+            sessionStorage.setItem("selectedMajor", major);
+
+            window.location.href = "/search";
+        });
     });
 </script>
 

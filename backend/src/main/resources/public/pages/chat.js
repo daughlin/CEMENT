@@ -147,6 +147,22 @@ document.addEventListener("DOMContentLoaded", function () {
             max-width: 90%;
         }
 
+        .chat-add-course-btn {
+            margin-top: 8px;
+            border: none;
+            border-radius: 8px;
+            background: #1f3a5f;
+            color: white;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .chat-add-course-btn:disabled {
+            background: #64748b;
+            cursor: default;
+        }
+
         #chat-input-area {
             display: flex;
             gap: 8px;
@@ -227,11 +243,59 @@ document.addEventListener("DOMContentLoaded", function () {
     function addCourseCard(course, shouldSave = true) {
         const div = document.createElement("div");
         div.className = "chat-course";
+
+        const courseKey = `${course.name}|${course.section}`;
+        const alreadyScheduled =
+            window.scheduledCourses && window.scheduledCourses.has(courseKey);
+
         div.innerHTML = `
             <strong>${course.courseCode}</strong> - ${course.name}<br>
+            Section ${course.section}<br>
             ${course.credits} credits<br>
-            ${course.professors?.[0] || ""}
+            ${course.professors?.[0] || ""}<br>
+            <button type="button" class="chat-add-course-btn">
+                ${alreadyScheduled ? "Already added" : "Add course"}
+            </button>
         `;
+
+        const button = div.querySelector(".chat-add-course-btn");
+
+        if (alreadyScheduled) {
+            button.disabled = true;
+        }
+
+        button.addEventListener("click", async function () {
+            try {
+                const response = await fetch("/schedule/courses", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(course)
+                });
+
+                if (response.ok) {
+                    button.textContent = "Added ✓";
+                    button.disabled = true;
+
+                    if (window.scheduledCourses) {
+                        window.scheduledCourses.add(courseKey);
+                    }
+
+                    if (typeof window.refreshSchedule === "function") {
+                        window.refreshSchedule();
+                    }
+                } else {
+                    const errorText = await response.text();
+                    console.error("Could not add course:", errorText);
+                    button.textContent = "Could not add";
+                }
+            } catch (error) {
+                console.error("Add course failed:", error);
+                button.textContent = "Error";
+            }
+        });
+
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
 
@@ -266,7 +330,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                message: userMessage
+                message: userMessage,
+                semester: sessionStorage.getItem("selectedSemester")
             })
         })
             .then(async response => {
