@@ -152,5 +152,7 @@ public class SearchController {
 
             ctx.json(data);
         });
+
+
     }
 }
