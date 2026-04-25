@@ -48,7 +48,7 @@ public class StudentController {
 
         app.get("/degrees/{file}", ctx -> {
             String fileName = ctx.pathParam("file");
-            InputStream fileStream = Main.class.getResourceAsStream("/degree_pdfs/" + fileName);
+            InputStream fileStream = Main.class.getResourceAsStream("/degree-pdfs/" + fileName);
 
             if (fileStream == null) {
                 ctx.status(404).result("Degree PDF not found");

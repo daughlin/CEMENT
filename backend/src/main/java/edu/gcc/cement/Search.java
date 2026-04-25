@@ -15,6 +15,7 @@ public class Search {
     private ArrayList<Filter> filters;
     private static ArrayList<Course> courseList;
     private ArrayList<Course> results;
+    private Degree degree;
 
     /**
      * Constructor
@@ -46,6 +47,21 @@ public class Search {
             throw new Exception("Failed to find course list");
         }
         this.results.addAll(courseList);
+        //call update results
+        updateResults();
+    }
+
+    public Search(String query, ArrayList<Filter> filters, Degree degree) throws Exception{
+        this.query = query.split(" ");
+        this.filters = filters;
+        this.degree = degree;
+        this.results = new ArrayList<Course>();
+        readCourses();
+        if(courseList == null) {
+            throw new Exception("Failed to find course list");
+        }
+        this.results.addAll(courseList);
+
         //call update results
         updateResults();
     }
@@ -204,6 +220,17 @@ public class Search {
                     break;
                 case SEM:
                     if (!(course.getSemester().equals(filter.getValue()))){
+                        return false;
+
+                    }
+                    break;
+                case REQ:
+                    if (!DegreeRequirementService.isRequired(course, this.degree)) {
+                        return false;
+                    }
+                    break;
+                case ELECTIVE:
+                    if (!DegreeRequirementService.isElective(course, this.degree)) {
                         return false;
                     }
                     break;

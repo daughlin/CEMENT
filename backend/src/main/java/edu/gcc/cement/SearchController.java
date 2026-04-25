@@ -66,7 +66,25 @@ public class SearchController {
                 filters.add(new Filter(endTime, Type.END));
             }
 
-            Search search = new Search(query, filters);
+            String required = ctx.queryParam("required");
+            String elective = ctx.queryParam("elective");
+
+            if ("true".equals(required)) {
+                filters.add(new Filter("true", Type.REQ));
+            }
+
+            if ("true".equals(elective)) {
+                filters.add(new Filter("true", Type.ELECTIVE));
+            }
+
+            String major = ctx.queryParam("major");
+
+            Degree degree = null;
+            if (major != null && !major.isBlank()) {
+                degree = DegreeLoader.loadDegree(major);
+            }
+
+            Search search = new Search(query, filters, degree);
 
             ArrayList<Course> results = search.getResults();
 
@@ -81,8 +99,6 @@ public class SearchController {
             }
 
             ctx.json(validResults);
-
-            ctx.json(results);
         });
 
         // Inside SearchController.java, within registerRoutes method:
