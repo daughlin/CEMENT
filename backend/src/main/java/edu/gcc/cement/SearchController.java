@@ -70,7 +70,7 @@ public class SearchController {
 
             ArrayList<Course> results = search.getResults();
 
-            Schedule schedule = CalendarViewController.getSchedule();
+            Schedule schedule = CalendarViewController.getSchedule(semester);
 
             ArrayList<Course> validResults = new ArrayList<>();
 

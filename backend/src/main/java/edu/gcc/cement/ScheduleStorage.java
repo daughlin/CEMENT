@@ -5,29 +5,28 @@ import java.io.File;
 import java.io.IOException;
 
 public class ScheduleStorage {
-    private static final String FILE_NAME = "schedule.json";
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    // Update to accept a semester name for dynamic file paths
     public static void saveSchedule(Schedule schedule) {
+        String fileName = "schedule_" + schedule.getSemester() + ".json";
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(FILE_NAME), schedule);
+            mapper.writerWithDefaultPrettyPrinter().writeValue(new File(fileName), schedule);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static Schedule loadSchedule() {
+    public static Schedule loadSchedule(String semester) {
+        String fileName = "schedule_" + semester + ".json";
         try {
-            File file = new File(FILE_NAME);
-
+            File file = new File(fileName);
             if (!file.exists()) {
-                return new Schedule();
+                return new Schedule(semester); // Return new empty schedule if none exists
             }
-
             return mapper.readValue(file, Schedule.class);
         } catch (IOException e) {
-            e.printStackTrace();
-            return new Schedule();
+            return new Schedule(semester);
         }
     }
 }
