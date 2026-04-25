@@ -351,7 +351,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 addMessage(data.reply, "bot-message");
 
-                if (data.intent === "COURSE_SEARCH" && data.data) {
+                if ((data.intent === "COURSE_SEARCH" || data.intent === "SCHEDULE_SUGGESTION") && data.data) {
                     displayCourses(data.data);
                 }
             })
