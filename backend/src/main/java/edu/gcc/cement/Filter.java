@@ -1,7 +1,7 @@
 package edu.gcc.cement;
 
 enum Type {
-    DEPT, PROF, START, END, DAYS, CREDITS, SEM;
+    DEPT, PROF, START, END, DAYS, CREDITS, SEM, REQ, ELECTIVE;
 }
 
 public class Filter {
