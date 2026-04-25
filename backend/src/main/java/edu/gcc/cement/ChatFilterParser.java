@@ -206,7 +206,20 @@ public class ChatFilterParser {
                 .replace("prof", " ")
                 .replace("prof.", " ")
                 .replace("professor", " ")
+                .replace("please", " ")
+                .replace("suggest", " ")
+                .replace("professor", " ")
+                .replace("that", " ")
+                .replace("is", " ")
+                .replace("fit", " ")
+                .replace("professor", " ")
+                .replace("my ", " ")
+                .replace("schedule", " ")
+                .replace("my schedule", " ")
+                .replace("can", " ")
+                .replace("you", " ")
                 .replace("that is", " ");
+
     }
 
     private String cleanupQuery(String message) {
