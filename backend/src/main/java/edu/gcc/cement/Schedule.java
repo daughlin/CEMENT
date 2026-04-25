@@ -10,6 +10,7 @@ public class Schedule {
 
     private ArrayList<Course> courses;
     private String semester;
+    private String major;
 
     private ArrayList<Course> favorites;
 
@@ -49,8 +50,15 @@ public class Schedule {
         return semester;
     }
 
+    public String getMajor() {return semester;}
+
+
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
     }
 
     /**
