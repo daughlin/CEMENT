@@ -21,6 +21,83 @@ window.scheduledCourses = new Set();
 
 window.currentCourse = null;
 
+window.refreshSchedule = function () {
+    window.scheduledCourses.clear();
+
+    const days = { M: [], T: [], W: [], R: [], F: [] };
+
+    document.querySelectorAll(".day-grid").forEach(grid => {
+        grid.innerHTML = "";
+    });
+
+    fetch("/schedule")
+        .then(res => res.json())
+        .then(courses => {
+            courses.forEach(course => {
+                const key = `${course.name}|${course.section}`;
+                window.scheduledCourses.add(key);
+            });
+
+            courses.forEach(course => {
+                course.times.forEach(time => {
+                    if (!days[time.day]) return;
+
+                    days[time.day].push({
+                        ...course,
+                        start: time.startTime,
+                        end: time.endTime
+                    });
+                });
+            });
+
+            Object.keys(days).forEach(day => {
+                const dayGrid = document.querySelector(`#${day} .day-grid`);
+                if (!dayGrid) return;
+
+                const dayCourses = days[day];
+                dayCourses.sort((a, b) => a.start - b.start);
+
+                for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
+                    const row = Math.floor((t - startOfDay) / slotMinutes) + 1;
+                    const freeBlockEnd = getFreeBlockEnd(dayCourses, t, endOfDay);
+
+                    const params = new URLSearchParams({
+                        days: getDayGroup(day),
+                        start: t,
+                        end: freeBlockEnd
+                    });
+
+                    const label = document.createElement("div");
+                    label.classList.add("time-label");
+                    label.textContent = minutesToTime(t);
+                    label.style.gridRow = `${row}`;
+                    label.style.gridColumn = "1";
+
+                    const dropCell = document.createElement("div");
+                    dropCell.classList.add("calendar-dropzone");
+                    dropCell.dataset.day = day;
+                    dropCell.dataset.start = t;
+                    dropCell.dataset.end = t + slotMinutes;
+                    dropCell.style.gridRow = `${row}`;
+                    dropCell.style.gridColumn = "2";
+
+                    const link = document.createElement("a");
+                    link.classList.add("add-course-link");
+                    link.href = `/search?${params.toString()}`;
+                    link.textContent = "+ Add";
+
+                    dropCell.appendChild(link);
+
+                    dayGrid.appendChild(label);
+                    dayGrid.appendChild(dropCell);
+                }
+
+                dayCourses.forEach(course => {
+                    addCourse(dayGrid, course);
+                });
+            });
+        });
+};
 
         document.querySelectorAll(".color-dot").forEach(dot => {
             dot.addEventListener("click", () => {
@@ -62,77 +139,7 @@ window.currentCourse = null;
             });
         });
 
-        fetch("/schedule")
-            .then(res => res.json())
-            .then(courses => {
-                courses.forEach(course => {
-                    const key = `${course.name}|${course.section}`;
-                    window.scheduledCourses.add(key);
-                });
-
-
-            // Assign courses to their day arrays
-            courses.forEach(course => {
-                course.times.forEach(time => {
-                    if (!days[time.day]) return;
-
-                    days[time.day].push({
-                        ...course,
-                        start: time.startTime,
-                        end: time.endTime
-                    });
-                });
-            });
-
-            Object.keys(days).forEach(day => {
-                const dayGrid = document.querySelector(`#${day} .day-grid`);
-                if (!dayGrid) return;
-
-                const dayCourses = days[day];
-                dayCourses.sort((a, b) => a.start - b.start);
-
-                for (let t = startOfDay; t < endOfDay; t += slotMinutes) {
-                    const row = Math.floor((t - startOfDay) / slotMinutes) + 1;
-
-                    const freeBlockEnd = getFreeBlockEnd(dayCourses, t, endOfDay);
-
-                    const params = new URLSearchParams({
-                        days: getDayGroup(day),
-                        start: t,
-                        end: freeBlockEnd
-                    });
-
-                    const label = document.createElement("div");
-                    label.classList.add("time-label");
-                    label.textContent = minutesToTime(t);
-                    label.style.gridRow = `${row}`;
-                    label.style.gridColumn = "1";
-
-                    const dropCell = document.createElement("div");
-                    dropCell.classList.add("calendar-dropzone");
-                    dropCell.dataset.day = day;
-                    dropCell.dataset.start = t;
-                    dropCell.dataset.end = t + slotMinutes;
-                    dropCell.style.gridRow = `${row}`;
-                    dropCell.style.gridColumn = "2";
-
-                    const link = document.createElement("a");
-                    link.classList.add("add-course-link");
-                    link.href = `/search?${params.toString()}`;
-                    link.textContent = "+ Add";
-
-                    dropCell.appendChild(link);
-
-                    dayGrid.appendChild(label);
-                    dayGrid.appendChild(dropCell);
-                }
-
-                dayCourses.forEach(course => {
-                    addCourse(dayGrid, course);
-                });
-            });
-
-        });
+        window.refreshSchedule();
 
 
 
