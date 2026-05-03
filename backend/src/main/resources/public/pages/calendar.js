@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Calendar page loaded!");
 
     const startOfDay = 8 * 60;   // 8:00 AM
-    const endOfDay = 18 * 60;    // 6:00 PM
+    const endOfDay = 21 * 60;    // 6:00 PM
 
     // Day columns (must match HTML IDs)
     const days = { M: [], T: [], W: [], R: [], F: [] };

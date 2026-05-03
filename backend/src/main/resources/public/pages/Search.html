@@ -36,7 +36,7 @@
                     <a class="nav-link" href="/calendar">My Schedule</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#" onclick="openDegreePdf()">Example Schedules</a>
+                    <a class="nav-link" href="#" onclick="openDegreePdf()">Example Schedule</a>
                 </li>
             </ul>
 
@@ -49,14 +49,16 @@
 
 <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-0">Course Search</h1>
+    <div class="search-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Course Search</h3>
 
-        <button
-                class="btn btn-primary"
-                onclick="window.location.href='/calendar'">
-            Go to schedule
-        </button>
+            <button
+                    class="btn schedule-btn"
+                    onclick="window.location.href='/calendar'">
+                Go to schedule
+            </button>
+        </div>
     </div>
 
     <div class="card shadow-sm mb-4">
@@ -110,10 +112,11 @@
                                 id="startTimeFilter"
                                 class="form-control"
                         >
+
                         <button
                                 type="button"
                                 id="clearStartTimeBtn"
-                                class="btn btn-outline-secondary btn-sm"
+                                class="btn btn-outline-secondary btn-sm mt-2"
                         >
                             Clear
                         </button>
@@ -130,7 +133,7 @@
                         <button
                                 type="button"
                                 id="clearEndTimeBtn"
-                                class="btn btn-outline-secondary btn-sm"
+                                class="btn btn-outline-secondary btn-sm mt-2"
                         >
                             Clear
                         </button>
@@ -189,6 +192,8 @@
                             <label class="form-check-label" for="dayF">Friday</label>
                         </div>
                     </div>
+
+                    <br>
 
                     <div>
                         <button
