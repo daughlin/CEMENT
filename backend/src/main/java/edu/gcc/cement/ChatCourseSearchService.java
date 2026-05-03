@@ -8,6 +8,7 @@ public class ChatCourseSearchService {
         try {
             String message = request.getMessage();
             String semester = request.getSemester();
+            String major = request.getMajor();
 
             Search baseSearch = new Search("", new ArrayList<>());
             ArrayList<Course> courses = baseSearch.getCourseList();
@@ -29,10 +30,15 @@ public class ChatCourseSearchService {
                 filters.add(new Filter(semester, Type.SEM));
             }
 
+            Degree degree = null;
+            if (major != null && !major.isBlank()) {
+                degree = DegreeLoader.loadDegree(major);
+            }
+
             Search actualSearch = new Search(
                     chatRequest.getQuery(),
                     filters,
-                    courses
+                    degree
             );
 
             ArrayList<Course> results = actualSearch.getResults();
@@ -41,7 +47,8 @@ public class ChatCourseSearchService {
                     results,
                     filters,
                     chatRequest.getQuery(),
-                    semester
+                    semester,
+                    major
             );
 
             return new ChatResponse(
@@ -63,7 +70,7 @@ public class ChatCourseSearchService {
     private String summarizeResults(ArrayList<Course> results,
                                     ArrayList<Filter> filters,
                                     String query,
-                                    String semester) {
+                                    String semester, String major) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -82,6 +89,15 @@ public class ChatCourseSearchService {
             sb.append(semester);
         }
         sb.append(". ");
+
+        sb.append(" Major: ");
+        if (major == null || major.isBlank()) {
+            sb.append("none");
+        } else {
+            sb.append(major);
+        }
+        sb.append(". ");
+
 
         sb.append("Parsed filters: ");
         if (filters == null || filters.isEmpty()) {

@@ -117,6 +117,7 @@ public class ScheduleSuggestionService {
             }
         }
 
+
         sb.append(". ");
 
         if (courses == null || courses.isEmpty()) {

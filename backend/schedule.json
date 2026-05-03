@@ -71,7 +71,116 @@
     "credits" : 0,
     "description" : "",
     "displayColor" : "#7A958F"
+  }, {
+    "name" : "INTRO TO ENVIRONMENTAL EDUCATION",
+    "courseCode" : "BIOL 208",
+    "section" : "A",
+    "department" : "BIOL",
+    "professors" : [ "Gundlach, Alaina Trilece" ],
+    "times" : [ ],
+    "semester" : "2024_Fall",
+    "location" : "On Line Course",
+    "credits" : 2,
+    "description" : "",
+    "displayColor" : "#7A958F"
+  }, {
+    "name" : "WEB PROGRAMMING TECHNOLOGIES",
+    "courseCode" : "COMP 442",
+    "section" : "A",
+    "department" : "COMP",
+    "professors" : [ "Dickinson, Brian C" ],
+    "times" : [ {
+      "day" : "M",
+      "startTime" : 840,
+      "endTime" : 890
+    }, {
+      "day" : "W",
+      "startTime" : 840,
+      "endTime" : 890
+    }, {
+      "day" : "F",
+      "startTime" : 840,
+      "endTime" : 890
+    } ],
+    "semester" : "2024_Fall",
+    "location" : "Science Technology Engineering",
+    "credits" : 3,
+    "description" : "",
+    "displayColor" : "#7A958F"
+  }, {
+    "name" : "2D GAME DESIGN & DEVELOPMENT",
+    "courseCode" : "COMP 441",
+    "section" : "A",
+    "department" : "COMP",
+    "professors" : [ "Dickinson, Brian C" ],
+    "times" : [ {
+      "day" : "M",
+      "startTime" : 600,
+      "endTime" : 650
+    }, {
+      "day" : "W",
+      "startTime" : 600,
+      "endTime" : 650
+    }, {
+      "day" : "F",
+      "startTime" : 600,
+      "endTime" : 650
+    } ],
+    "semester" : "2024_Fall",
+    "location" : "Science Technology Engineering",
+    "credits" : 3,
+    "description" : "",
+    "displayColor" : "#7A958F"
+  }, {
+    "name" : "COMPUTER ARCHITECTURE/ORG",
+    "courseCode" : "COMP 325",
+    "section" : "A",
+    "department" : "COMP",
+    "professors" : [ "Johnson, Ethan Joseph" ],
+    "times" : [ {
+      "day" : "M",
+      "startTime" : 540,
+      "endTime" : 590
+    }, {
+      "day" : "W",
+      "startTime" : 540,
+      "endTime" : 590
+    }, {
+      "day" : "F",
+      "startTime" : 540,
+      "endTime" : 590
+    } ],
+    "semester" : "2024_Fall",
+    "location" : "Science Technology Engineering",
+    "credits" : 3,
+    "description" : "",
+    "displayColor" : "#7A958F"
   } ],
   "semester" : null,
-  "favorites" : [ ]
+  "major" : null,
+  "favorites" : [ {
+    "name" : "2D GAME DESIGN & DEVELOPMENT",
+    "courseCode" : "COMP 441",
+    "section" : "A",
+    "department" : "COMP",
+    "professors" : [ "Dickinson, Brian C" ],
+    "times" : [ {
+      "day" : "M",
+      "startTime" : 600,
+      "endTime" : 650
+    }, {
+      "day" : "W",
+      "startTime" : 600,
+      "endTime" : 650
+    }, {
+      "day" : "F",
+      "startTime" : 600,
+      "endTime" : 650
+    } ],
+    "semester" : "2024_Fall",
+    "location" : "Science Technology Engineering",
+    "credits" : 3,
+    "description" : "",
+    "displayColor" : "#7A958F"
+  } ]
 }
