@@ -343,26 +343,62 @@ window.refreshSchedule = function () {
         return endOfDay;
     }
 
+
+});
+
+
     async function downloadPDF() {
 
         const { jsPDF } = window.jspdf;
 
         const calendar = document.querySelector(".calendar-wrapper");
 
-        const canvas = await html2canvas(calendar);
+        const canvas = await html2canvas(calendar, {scale: 2});
 
         const imgData = canvas.toDataURL("image/png");
 
         const pdf = new jsPDF({
-            orientation: "landscape",
-            unit: "px",
-            format: [canvas.width, canvas.height]
+            orientation: "portrait",
+            unit: "in",
+            format: "letter"
         });
 
-        pdf.addImage(imgData, "PNG", 0, 0);
+       // Page dimensions
+       const pageWidth = 11;   // inches
+       const pageHeight = 8.5;
 
-        pdf.save("schedule.pdf");
+       // Margins
+       const margin = 0.5;
+
+       // Title
+       pdf.setFont("helvetica", "bold");
+       pdf.setFontSize(20);
+       pdf.text("My Schedule", pageWidth / 2, margin, { align: "center" });
+
+       // Space for title
+       const titleHeight = 0.5;
+
+       // Available space for image
+       const availableWidth = pageWidth - (margin * 2);
+       const availableHeight = pageHeight - margin - titleHeight - margin;
+
+       // Convert canvas size to inches ratio
+       const imgAspectRatio = canvas.width / canvas.height;
+
+       let imgWidth = availableWidth;
+       let imgHeight = imgWidth / imgAspectRatio;
+
+       // If too tall, scale down
+       if (imgHeight > availableHeight) {
+           imgHeight = availableHeight;
+           imgWidth = imgHeight * imgAspectRatio;
+       }
+
+       // Center image
+       const x = (pageWidth - imgWidth) / 2;
+       const y = margin + titleHeight;
+
+       pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
+
+       pdf.save("schedule.pdf");
     }
-
-
-});
