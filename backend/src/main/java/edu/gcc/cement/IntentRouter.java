@@ -13,13 +13,15 @@ public class IntentRouter {
             return ChatIntent.APP_HELP;
         }
 
+        if (lower.contains("schedule") || lower.contains("build me") || lower.contains("suggest")) {
+            return ChatIntent.SCHEDULE_SUGGESTION;
+        }
+
         if (lower.contains("find") || lower.contains("search") || lower.contains("show me")) {
             return ChatIntent.COURSE_SEARCH;
         }
 
-        if (lower.contains("schedule") || lower.contains("build me") || lower.contains("suggest")) {
-            return ChatIntent.SCHEDULE_SUGGESTION;
-        }
+
 
         return ChatIntent.UNKNOWN;
     }

@@ -324,6 +324,12 @@ document.addEventListener("DOMContentLoaded", function () {
         addMessage(userMessage, "user-message");
         chatInput.value = "";
 
+        const selectedMajor = sessionStorage.getItem("selectedMajor");
+
+        console.log("Chat request major:", selectedMajor);
+        console.log("Chat request semester:", sessionStorage.getItem("selectedSemester"));
+
+
         fetch("/api/chat", {
             method: "POST",
             headers: {
@@ -331,7 +337,8 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify({
                 message: userMessage,
-                semester: sessionStorage.getItem("selectedSemester")
+                semester: sessionStorage.getItem("selectedSemester"),
+                major: selectedMajor
             })
         })
             .then(async response => {
@@ -351,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 addMessage(data.reply, "bot-message");
 
-                if (data.intent === "COURSE_SEARCH" && data.data) {
+                if ((data.intent === "COURSE_SEARCH" || data.intent === "SCHEDULE_SUGGESTION") && data.data) {
                     displayCourses(data.data);
                 }
             })

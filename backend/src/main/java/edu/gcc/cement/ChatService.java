@@ -5,11 +5,13 @@ public class ChatService {
     private final IntentRouter intentRouter;
     private final HelpService helpService;
     private final ChatCourseSearchService chatCourseSearchService;
+    private final ScheduleSuggestionService scheduleSuggestionService;
 
     public ChatService() {
         this.intentRouter = new IntentRouter();
         this.helpService = new HelpService();
         this.chatCourseSearchService = new ChatCourseSearchService();
+        this.scheduleSuggestionService = new ScheduleSuggestionService();
     }
 
     public ChatResponse handleMessage(ChatRequest request) {
@@ -27,7 +29,7 @@ public class ChatService {
         return switch (intent) {
             case APP_HELP -> handleAppHelp(message);
             case COURSE_SEARCH -> handleCourseSearch(request);
-            case SCHEDULE_SUGGESTION -> handleScheduleSuggestion(message);
+            case SCHEDULE_SUGGESTION -> handleScheduleSuggestion(request);
             default -> new ChatResponse(
                     "I’m not sure what you mean yet. Try asking for help, course search, or a schedule suggestion.",
                     ChatIntent.UNKNOWN.name(),
@@ -45,11 +47,7 @@ public class ChatService {
         return chatCourseSearchService.handle(request);
     }
 
-    private ChatResponse handleScheduleSuggestion(String message) {
-        return new ChatResponse(
-                "Schedule suggestions are not connected yet, but I can already help search for courses.",
-                ChatIntent.SCHEDULE_SUGGESTION.name(),
-                null
-        );
+    private ChatResponse handleScheduleSuggestion(ChatRequest request) {
+        return scheduleSuggestionService.handle(request);
     }
 }

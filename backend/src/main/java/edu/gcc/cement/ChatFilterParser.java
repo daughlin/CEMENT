@@ -40,6 +40,7 @@ public class ChatFilterParser {
         leftover = parseTimes(leftover, filters);
         leftover = parseDepartment(leftover, filters);
         leftover = parseProfessor(leftover, filters);
+        leftover = parseMajorRequirement(leftover, filters);
         leftover = parseSpecialPhrases(leftover, filters);
 
         leftover = cleanupQuery(leftover);
@@ -189,6 +190,40 @@ public class ChatFilterParser {
         return message;
     }
 
+    private String parseMajorRequirement(String message, ArrayList<Filter> filters) {
+        if (message.contains("required")
+                || message.contains("requirement")
+                || message.contains("requirements")
+                || message.contains("required for my major")
+                || message.contains("in major")) {
+
+            filters.add(new Filter("", Type.REQ));
+
+            return message
+                    .replace("required for my major", " ")
+                    .replace("requirements", " ")
+                    .replace("requirement", " ")
+                    .replace("required", " ")
+                    .replace("in major", " ");
+        }
+
+        if (message.contains("elective")
+                || message.contains("electives")
+                || message.contains("major elective")
+                || message.contains("elective for my major")) {
+
+            filters.add(new Filter("", Type.ELECTIVE));
+
+            return message
+                    .replace("elective for my major", " ")
+                    .replace("major elective", " ")
+                    .replace("electives", " ")
+                    .replace("elective", " ");
+        }
+
+        return message;
+    }
+
     private String parseSpecialPhrases(String message, ArrayList<Filter> filters) {
         return message
                 .replace("find", " ")
@@ -206,7 +241,25 @@ public class ChatFilterParser {
                 .replace("prof", " ")
                 .replace("prof.", " ")
                 .replace("professor", " ")
+                .replace("please", " ")
+                .replace("suggest", " ")
+                .replace("professor", " ")
+                .replace("that", " ")
+                .replace("is", " ")
+                .replace("fit", " ")
+                .replace("professor", " ")
+                .replace("my ", " ")
+                .replace("schedule", " ")
+                .replace("my schedule", " ")
+                .replace("can", " ")
+                .replace("you", " ")
+                .replace("for my major", " ")
+                .replace("my major", " ")
+                .replace("major", " ")
+                .replace("for", " ")
+                .replace("me", " ")
                 .replace("that is", " ");
+
     }
 
     private String cleanupQuery(String message) {
