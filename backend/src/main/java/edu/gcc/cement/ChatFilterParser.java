@@ -257,6 +257,7 @@ public class ChatFilterParser {
                 .replace("my major", " ")
                 .replace("major", " ")
                 .replace("for", " ")
+                .replace("me", " ")
                 .replace("that is", " ");
 
     }

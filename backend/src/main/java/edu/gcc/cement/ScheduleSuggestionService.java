@@ -8,6 +8,12 @@ public class ScheduleSuggestionService {
         try {
             String message = request.getMessage();
             String semester = request.getSemester();
+            String major = request.getMajor();
+
+            Degree degree = null;
+            if (major != null && !major.isBlank()) {
+                degree = DegreeLoader.loadDegree(major);
+            }
 
             Search baseSearch = new Search("", new ArrayList<>());
             ArrayList<Course> allCourses = baseSearch.getCourseList();
@@ -21,7 +27,12 @@ public class ScheduleSuggestionService {
                 filters.add(new Filter(semester, Type.SEM));
             }
 
-            Search filteredSearch = new Search(parsed.getQuery(), filters, allCourses);
+            Search filteredSearch = new Search(
+                    parsed.getQuery(),
+                    filters,
+                    degree
+            );
+
             ArrayList<Course> candidateCourses = filteredSearch.getResults();
 
             Schedule currentSchedule = CalendarViewController.getSchedule();
