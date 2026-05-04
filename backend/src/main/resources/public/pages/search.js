@@ -257,6 +257,7 @@ function displayResults(courses) {
 
         cardBody.prepend(heartBtn);
         cardBody.appendChild(showButton);
+        cardBody.appendChild(document.createElement("br"));
         cardBody.appendChild(addButton);
         card.appendChild(cardBody);
         resultsDiv.appendChild(card);

@@ -1,0 +1,72 @@
+{
+  "degree": "Accounting",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Accounting Core",
+      "courses": [
+        "ACCT 201",
+        "ACCT 202",
+        "ACCT 301",
+        "ACCT 302",
+        "ACCT 303",
+        "ACCT 310",
+        "ACCT 321",
+        "ACCT 402"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Business Core",
+      "courses": [
+        "FNCE 301",
+        "MARK 104",
+        "STAT 131",
+        "MNGT 103",
+        "MNGT 110",
+        "MNGT 214",
+        "MNGT 303",
+        "MNGT 486"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Major-Related Requirements",
+      "courses": [
+        "ECON 101",
+        "ECON 102"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Major Electives",
+      "creditsRequired": 12,
+      "courses": [
+        "ACCT 403",
+        "ACCT 407"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Business Calculus Choice",
+      "creditsRequired": 4,
+      "courses": [
+        "MATH 141",
+        "MATH 161"
+      ]
+    }
+  ]
+}

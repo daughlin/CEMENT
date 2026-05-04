@@ -1,0 +1,84 @@
+{
+  "degree": "Biology",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Biology Core",
+      "courses": [
+        "BIOL 101",
+        "BIOL 102",
+        "BIOL 233",
+        "BIOL 234",
+        "BIOL 488"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Major-Related Requirements",
+      "courses": [
+        "CHEM 111",
+        "CHEM 113",
+        "CHEM 112",
+        "CHEM 114",
+        "MATH 161"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Introductory Biology Choice",
+      "creditsRequired": 1,
+      "courses": [
+        "BIOL 180",
+        "BIOL 182"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Biology Group Choices",
+      "creditsRequired": 18,
+      "courses": [
+        "BIOL 301",
+        "BIOL 302",
+        "BIOL 322",
+        "BIOL 325",
+        "BIOL 334",
+        "BIOL 346",
+        "BIOL 407",
+        "BIOL 310",
+        "BIOL 313",
+        "BIOL 314",
+        "BIOL 341",
+        "BIOL 305",
+        "BIOL 323",
+        "BIOL 326",
+        "BIOL 409",
+        "BIOL 320",
+        "BIOL 328",
+        "BIOL 331",
+        "BIOL 332",
+        "BIOL 343",
+        "BIOL 403",
+        "BIOL 421"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Biology Electives",
+      "creditsRequired": 4,
+      "courses": []
+    }
+  ]
+}

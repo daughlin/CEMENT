@@ -5,6 +5,9 @@ public class ChatRequest {
     private String message;
     private String studentId;
     private String semester;
+    private String major;
+
+
 
     public ChatRequest() {}
 
@@ -30,5 +33,13 @@ public class ChatRequest {
 
     public void setSemester(String semester) {
         this.semester = semester;
+    }
+
+    public String getMajor() {
+        return major;
+    }
+
+    public void setMajor(String major) {
+        this.major = major;
     }
 }

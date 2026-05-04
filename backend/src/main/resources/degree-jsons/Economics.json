@@ -1,0 +1,85 @@
+{
+  "degree": "Economics",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Economics Core",
+      "courses": [
+        "ECON 101",
+        "ECON 102",
+        "ECON 120",
+        "ECON 301",
+        "ECON 302",
+        "ECON 342",
+        "ECON 407",
+        "ECON 408",
+        "ECON 420"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Major-Related Requirement",
+      "courses": [
+        "PHIL 161",
+        "PHIL 211",
+        "STAT 131",
+        "SOCI 101"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Economics Electives",
+      "creditsRequired": 15,
+      "courses": [
+        "ECON 202",
+        "ECON 204",
+        "ECON 206",
+        "ECON 207",
+        "ECON 213",
+        "ECON 214",
+        "ECON 215",
+        "ECON 216",
+        "ECON 303",
+        "ECON 306",
+        "ECON 309",
+        "ECON 310",
+        "ECON 401",
+        "ECON 402",
+        "ECON 404",
+        "ECON 456",
+        "ECON 260",
+        "ECON 360",
+        "ECON 460",
+        "ECON 270",
+        "ECON 370",
+        "ECON 470",
+        "ECON 290",
+        "ECON 390",
+        "ECON 480",
+        "ECON 499"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Business Calculus Choice",
+      "creditsRequired": 4,
+      "courses": [
+        "MATH 141",
+        "MATH 161"
+      ]
+    }
+  ]
+}

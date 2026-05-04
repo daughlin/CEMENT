@@ -18,10 +18,10 @@ public class StudentController {
         app.get("/api/majors", ctx -> {
             ArrayList<String> majors = new ArrayList<>();
 
-            URL folderUrl = StudentController.class.getResource("/degree-pdfs");
+            URL folderUrl = StudentController.class.getResource("/degree-jsons");
 
             if (folderUrl == null) {
-                ctx.status(500).result("Could not find degree_pdfs folder");
+                ctx.status(500).result("Could not find degree-jsons folder");
                 return;
             }
 
@@ -30,10 +30,13 @@ public class StudentController {
 
                 try (Stream<Path> paths = Files.list(folderPath)) {
                     paths
-                            .filter(path -> path.toString().toLowerCase().endsWith(".pdf"))
+                            .filter(path -> path.toString().toLowerCase().endsWith(".json"))
                             .forEach(path -> {
                                 String fileName = path.getFileName().toString();
-                                String majorName = fileName.replaceFirst("(?i)\\.pdf$", "");
+
+                                // Remove .json extension
+                                String majorName = fileName.replaceFirst("(?i)\\.json$", "");
+
                                 majors.add(majorName);
                             });
                 }

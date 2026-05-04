@@ -1,0 +1,146 @@
+{
+  "degree": "Data Science",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Data Science Requirements",
+      "courses": [
+        "DSCI 201",
+        "DSCI 431",
+        "DSCI 450"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Computer Science Requirements",
+      "courses": [
+        "COMP 141",
+        "COMP 155",
+        "COMP 220",
+        "COMP 222",
+        "COMP 244",
+        "COMP 435"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Math and Statistics Requirements",
+      "courses": [
+        "MATH 161",
+        "MATH 162",
+        "MATH 213",
+        "MATH 214",
+        "STAT 132"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 101"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Technical Elective",
+      "creditsRequired": 3,
+      "courses": [
+        "COMP 230",
+        "COMP 445",
+        "MNGT 210",
+        "STAT 412"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Statistics Choice",
+      "creditsRequired": 3,
+      "courses": [
+        "STAT 131",
+        "PSYC 201"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Natural Science Requirement",
+      "creditsRequired": 4,
+      "courses": [
+        "PHYS 101",
+        "PHYS 102",
+        "PHYS 121",
+        "PHYS 122",
+        "CHEM 105",
+        "CHEM 111",
+        "CHEM 113",
+        "CHEM 112",
+        "CHEM 114",
+        "BIOL 101",
+        "BIOL 102"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Domain Concentration",
+      "creditsRequired": 15,
+      "courses": [
+        "ECON 101",
+        "ECON 102",
+        "ECON 120",
+        "EXER 101",
+        "POLS 104",
+        "POLS 201",
+        "POLS 204",
+        "POLS 205",
+        "PSYC 101",
+        "SOCW 101",
+        "SOCW 264",
+        "SOCW 342",
+        "SOCW 382",
+        "SOCI 101",
+        "SOCI 377",
+        "SOCI 473",
+        "ACCT 201",
+        "ACCT 202",
+        "ACCT 301",
+        "ACCT 321",
+        "ACCT 407",
+        "FNCE 301",
+        "MNGT 103",
+        "MARK 104",
+        "ENTR 101",
+        "ENTR 102",
+        "ENTR 201",
+        "FNCE 332",
+        "FNCE 440",
+        "MNGT 457",
+        "MNGT 475",
+        "STAT 131",
+        "MARK 315",
+        "MARK 411",
+        "MARK 415",
+        "MARK 419",
+        "BIOL 101",
+        "BIOL 102",
+        "BIOL 233",
+        "BIOL 234",
+        "CHEM 105",
+        "CHEM 111",
+        "CHEM 113",
+        "CHEM 112",
+        "CHEM 114",
+        "CHEM 227",
+        "CHEM 241",
+        "PHYS 101",
+        "PHYS 102",
+        "PHYS 135",
+        "PHYS 234"
+      ]
+    }
+  ]
+}

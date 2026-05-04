@@ -4,7 +4,7 @@
 
 :root {
     --slot-height: 60px;
-    --slots-per-day: 20;
+    --slots-per-day: 26;
     --primary: #2F4156;
     --secondary: #567C8D;
     --accent: #C8D9E6;
@@ -20,11 +20,11 @@ body {
 
 body {
     background-color: var(--background) !important;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-.container-fluid,
-.row {
-    height: 100%;
+.container-fluid {
+    min-height: 100%;
 }
 
 
@@ -67,6 +67,9 @@ body {
 .navbar {
     background-color: var(--white) !important;
     border-bottom: 1px solid var(--accent);
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* keeps it above everything */
 }
 
 .navbar-brand {
@@ -97,6 +100,13 @@ body {
 
 .day-card .card-body {
     padding: 0;
+}
+
+.day-card,
+.day-card .card,
+.calendar-wrapper {
+    position: relative;
+    z-index: 1;
 }
 
 .time-column,
@@ -200,12 +210,11 @@ body {
 
 .course-title {
     font-weight: 600;
-    font-size: 0.72rem;
     line-height: 1.1;
-    overflow-wrap: anywhere;
-    word-break: break-word;
     margin-bottom: 4px;
     color: white;
+
+    font-size: 0.68rem;
 }
 
 .course-time {
@@ -230,11 +239,15 @@ body {
     position: relative;
 }
 
-.draggable-course.dragging {
+.draggable-course.dragging,
+.favorite-course.dragging,
+.course-block.dragging {
+    position: relative;
+    z-index: 99999 !important;
     opacity: 1;
-    z-index: 9999;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
+
 
 .drop-active {
     background-color: #e7f1ff;
@@ -271,9 +284,17 @@ body {
    FAVORITES PANEL
    ========================= */
 
+
+#favoritesColumn,
+#detailsColumn {
+    z-index: 2000;
+}
+
 #favoritesColumn {
-    display: flex;
-    flex: 0 0 16.666667%;
+    position: sticky;
+    top: 90px;
+    height: calc(100vh - 90px);
+    align-self: flex-start;
     max-width: 16.666667%;
 }
 
@@ -283,12 +304,15 @@ body {
     border-radius: 10px;
     padding: 12px;
     min-height: 0;
+
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
+
     transition: max-height 0.3s ease;
     max-height: 1000px;
-    overflow: hidden;
+
     width: 100%;
 }
 
@@ -297,13 +321,14 @@ body {
 }
 
 #favoritesContent {
-    flex: 1;
     display: flex;
     flex-direction: column;
     max-height: 1000px;
     opacity: 1;
     transition: max-height 0.25s ease, opacity 0.25s ease;
-    overflow: visible;
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 6px;
 }
 
 #favoritesContent.collapsed {
@@ -322,6 +347,8 @@ body {
     background-color: #e7f1ff;
     border: 2px dashed #0d6efd;
 }
+
+
 
 
 /* =========================
@@ -365,6 +392,9 @@ body {
     font-weight: 600;
     font-size: 0.92rem;
     color: #212529;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .favorite-section {
@@ -407,15 +437,33 @@ body {
    ========================= */
 
 #courseDetailsPanel {
-    min-height: 400px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 #courseDetailsContent {
     font-size: 0.9rem;
+    flex: none;
+    overflow: visible;
+    padding-right: 6px;
 }
 
 #courseDetailsContent strong {
     color: #212529;
+}
+
+#detailsContentWrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+#detailsColumn {
+    position: sticky;
+    top: 90px; /* match your navbar height */
+    height: calc(100vh - 90px);
+    align-self: flex-start;
 }
 
 
@@ -467,11 +515,13 @@ Search Results
 .btn-success {
     background-color: var(--primary);
     border-color: var(--primary);
+    color: var(--white);
 }
 
 .btn-success:hover {
     background-color: var(--secondary);
     border-color: var(--secondary);
+    color: var(--white);
 }
 
 .btn-outline-primary {
@@ -483,6 +533,169 @@ Search Results
     background-color: var(--primary);
     color: var(--white);
 }
+
+.btn-primary {
+    background-color: var(--primary) !important;
+    border-color: var(--primary) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary) !important;
+    border-color: var(--secondary) !important;
+}
+
+
+/* =========================
+   SEMESTER PAGE
+   ========================= */
+
+.semester-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.semester-card {
+    background-color: var(--white);
+    width: 100%;
+    max-width: 700px;
+    padding: 48px;
+    border-radius: 18px;
+    border: 1px solid var(--accent);
+    box-shadow: 0 12px 30px rgba(47, 65, 86, 0.18);
+    text-align: center;
+}
+
+.semester-card h1 {
+    color: var(--primary);
+    margin-bottom: 8px;
+    font-size: 2rem;
+}
+
+.semester-card .subtitle {
+    color: var(--secondary);
+    margin-bottom: 28px;
+    font-size: 1.1rem;
+}
+
+.semester-card .field {
+    text-align: left;
+    margin-bottom: 18px;
+}
+
+.semester-card label {
+    display: block;
+    color: var(--primary);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.semester-card select {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    background-color: var(--white);
+}
+
+.semester-card button {
+    padding: 14px 28px;
+    font-size: 1rem;
+    font-weight: 500;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+
+/* =========================
+   SEARCH HEADER
+   ========================= */
+
+.search-header {
+    background-color: var(--primary);   /* navy */
+    color: var(--white);
+    padding: 16px 20px;
+
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+
+    margin-bottom: 0;
+}
+
+/* Make the next card connect visually */
+.search-header + .card {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+
+/* Button inside header */
+.schedule-btn {
+    background-color: var(--white);
+    color: var(--primary);
+    border: none;
+    font-weight: 500;
+}
+
+.schedule-btn:hover {
+    background-color: var(--white);
+    color: var(--primary);
+}
+
+
+/* =========================
+   SCHEDULE HEADER
+   ========================= */
+
+.schedule-header {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 16px 20px;
+
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+
+    margin: 0;
+
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+
+    border-bottom: 4px solid rgba(255, 255, 255, 0.5);
+}
+
+.schedule-btn {
+    background-color: var(--white);
+    color: var(--primary);
+    border: 1px solid var(--accent);
+    font-weight: 500;
+}
+
+.schedule-btn:hover {
+    background-color: var(--accent);
+    color: var(--primary);
+}
+
+.schedule-card {
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: var(--primary);
+    padding-bottom: 12px;
+
+}
+
+.schedule-card .card {
+    border-radius: 0;
+}
+
+.calendar-wrapper {
+    padding: 16px;
+}
+
+
 
 
 /* =========================
