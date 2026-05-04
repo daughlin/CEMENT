@@ -4,54 +4,69 @@
     <meta charset="UTF-8">
     <title>Select Semester and Major</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 100px;
-        }
+    <link rel="stylesheet" href="style.css">
 
-        .field {
-            margin: 20px;
-        }
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            text-align: center;-->
+<!--            margin-top: 100px;-->
+<!--        }-->
 
-        select {
-            padding: 10px;
-            font-size: 16px;
-            min-width: 250px;
-        }
+<!--        .field {-->
+<!--            margin: 20px;-->
+<!--        }-->
 
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            margin-top: 30px;
-            cursor: pointer;
-        }
+<!--        select {-->
+<!--            padding: 10px;-->
+<!--            font-size: 16px;-->
+<!--            min-width: 250px;-->
+<!--        }-->
 
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-    </style>
+<!--        button {-->
+<!--            padding: 12px 20px;-->
+<!--            font-size: 16px;-->
+<!--            margin-top: 30px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+
+<!--        button:disabled {-->
+<!--            cursor: not-allowed;-->
+<!--            opacity: 0.5;-->
+<!--        }-->
+<!--    </style>-->
 </head>
 
 <body>
 
-<h1>Welcome! Please select your semester and major</h1>
+<div class="semester-page">
+    <div class="semester-card">
 
-<div class="field">
-    <select id="semesterSelect">
-        <option value="" disabled selected>Loading semesters...</option>
-    </select>
+        <h1>Welcome</h1>
+        <p class="subtitle">Please select your semester and major</p>
+
+        <div class="field">
+            <label>Semester</label>
+            <select id="semesterSelect">
+                <option value="" disabled selected>Loading semesters...</option>
+            </select>
+        </div>
+
+        <div class="field">
+            <label>Major</label>
+            <select id="majorSelect">
+                <option value="" disabled selected>Loading majors...</option>
+            </select>
+        </div>
+
+        <button id="continueBtn" class="btn btn-success" disabled>
+            Continue
+        </button>
+
+    </div>
 </div>
 
-<div class="field">
-    <select id="majorSelect">
-        <option value="" disabled selected>Loading majors...</option>
-    </select>
-</div>
-
-<button id="continueBtn" disabled>Continue</button>
+</body>
 
 <script>
     function formatSemester(sem) {
