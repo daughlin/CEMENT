@@ -108,28 +108,28 @@ public class ScheduleSuggestionService {
     private String summarize(ArrayList<Course> courses, String query, ArrayList<Filter> filters) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Parsed query: ");
-        if (query == null || query.isBlank()) {
-            sb.append("none");
-        } else {
-            sb.append("\"").append(query).append("\"");
-        }
-
-        sb.append(". Parsed filters: ");
-        if (filters == null || filters.isEmpty()) {
-            sb.append("none");
-        } else {
-            for (int i = 0; i < filters.size(); i++) {
-                Filter f = filters.get(i);
-                sb.append("[").append(f.getType()).append(": ").append(f.getValue()).append("]");
-                if (i < filters.size() - 1) {
-                    sb.append(", ");
-                }
-            }
-        }
-
-
-        sb.append(". ");
+//        sb.append("Parsed query: ");
+//        if (query == null || query.isBlank()) {
+//            sb.append("none");
+//        } else {
+//            sb.append("\"").append(query).append("\"");
+//        }
+//
+//        sb.append(". Parsed filters: ");
+//        if (filters == null || filters.isEmpty()) {
+//            sb.append("none");
+//        } else {
+//            for (int i = 0; i < filters.size(); i++) {
+//                Filter f = filters.get(i);
+//                sb.append("[").append(f.getType()).append(": ").append(f.getValue()).append("]");
+//                if (i < filters.size() - 1) {
+//                    sb.append(", ");
+//                }
+//            }
+//        }
+//
+//
+//        sb.append(". ");
 
         if (courses == null || courses.isEmpty()) {
             sb.append("I couldn’t find any courses that fit your current schedule.");

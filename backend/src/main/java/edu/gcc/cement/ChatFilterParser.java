@@ -258,6 +258,11 @@ public class ChatFilterParser {
                 .replace("major", " ")
                 .replace("for", " ")
                 .replace("me", " ")
+                .replace("a course", " ")
+                .replace("course", " ")
+                .replace("that fits", " ")
+                .replace("fits", " ")
+                .replace(" an ", " ")
                 .replace("that is", " ");
 
     }
