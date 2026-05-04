@@ -344,5 +344,49 @@ window.refreshSchedule = function () {
     }
 
 
-
 });
+
+
+    async function downloadPDF() {
+
+        const { jsPDF } = window.jspdf;
+
+        const calendar = document.querySelector(".col-8");
+
+        const canvas = await html2canvas(calendar, {
+            scale: 2,
+            backgroundColor: "#ffffff"
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+
+        // 🔑 Convert pixels → inches (assuming 96 DPI)
+        const pxToIn = (px) => px / 96;
+
+        const imgWidthIn = pxToIn(canvas.width);
+        const imgHeightIn = pxToIn(canvas.height);
+
+        const margin = 0.5;
+
+        // ✅ PDF size = image + margins
+        const pdfWidth = imgWidthIn + (margin * 2);
+        const pdfHeight = imgHeightIn + (margin * 2);
+
+        const pdf = new jsPDF({
+            orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
+            unit: "in",
+            format: [pdfWidth, pdfHeight]
+        });
+
+        // Place image inside margins
+        pdf.addImage(
+            imgData,
+            "PNG",
+            margin,
+            margin,
+            imgWidthIn,
+            imgHeightIn
+        );
+
+        pdf.save("schedule.pdf");
+    }

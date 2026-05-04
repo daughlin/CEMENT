@@ -43,12 +43,17 @@
             </ul>
 
             <!-- Profile circle -->
-            <div class="profile-circle" title="Profile">
-                C
-            </div>
+            <a class="profile-circle" href="/" title="Profile">C</a>
         </div>
     </div>
 </nav>
+
+
+<!-- Title -->
+<div class="container text-center mb-4">
+    <h1 class="fw-bold">My Schedule</h1>
+    <button id="downloadPDFBtn" class="btn btn-outline-primary btn-sm" onclick="downloadPDF()">Download PDF</button>
+</div>
 
 
 <div class="container-fluid">
@@ -184,6 +189,8 @@
 
 <!-- JS -->
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="calendar.js"></script>
 <script src="dragDrop.js"></script>
 <script src="chat.js"></script>
