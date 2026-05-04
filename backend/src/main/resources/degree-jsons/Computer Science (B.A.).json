@@ -1,0 +1,67 @@
+{
+  "degree": "Computer Science BA",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Computer Science Core",
+      "courses": [
+        "COMP 141",
+        "COMP 155",
+        "COMP 205",
+        "COMP 220",
+        "COMP 222",
+        "COMP 230",
+        "COMP 244",
+        "COMP 325",
+        "COMP 350",
+        "COMP 451",
+        "COMP 452"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Operating Systems or Networking Choice",
+      "creditsRequired": 3,
+      "courses": [
+        "COMP 340",
+        "COMP 342"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Computer Science Electives",
+      "creditsRequired": 15,
+      "courses": [
+        "ROBO 302"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Math Requirements",
+      "creditsRequired": 10,
+      "courses": [
+        "MATH 118",
+        "MATH 213",
+        "MATH 214",
+        "STAT 331",
+        "STAT 131",
+        "PSYC 201",
+        "MATH 141",
+        "MATH 161"
+      ]
+    }
+  ]
+}
