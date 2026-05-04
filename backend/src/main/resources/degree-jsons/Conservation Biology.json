@@ -1,0 +1,71 @@
+{
+  "degree": "Conservation Biology",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Biology Core",
+      "courses": [
+        "BIOL 101",
+        "BIOL 102",
+        "BIOL 180",
+        "BIOL 233",
+        "BIOL 234",
+        "BIOL 488"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Conservation Group 1",
+      "courses": [
+        "BIOL 305",
+        "BIOL 320",
+        "BIOL 326",
+        "BIOL 328",
+        "BIOL 331",
+        "BIOL 332"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Major-Related Requirements",
+      "courses": [
+        "CHEM 111",
+        "CHEM 113",
+        "CHEM 112",
+        "CHEM 114",
+        "MATH 161"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Conservation Group 2",
+      "creditsRequired": 9,
+      "courses": [
+        "BIOL 323",
+        "BIOL 343",
+        "BIOL 403",
+        "BIOL 409",
+        "BIOL 421"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Biology Electives",
+      "creditsRequired": 13,
+      "courses": []
+    }
+  ]
+}

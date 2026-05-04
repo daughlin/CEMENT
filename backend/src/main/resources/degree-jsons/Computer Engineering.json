@@ -1,0 +1,68 @@
+{
+  "degree": "Computer Engineering",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Computer Engineering Core",
+      "courses": [
+        "ELEE 201",
+        "ELEE 204",
+        "ELEE 221",
+        "ELEE 251",
+        "ELEE 301",
+        "ELEE 310",
+        "ELEE 351",
+        "ELEE 441",
+        "ELEE 442",
+        "COMP 141",
+        "COMP 220",
+        "COMP 222",
+        "COMP 230",
+        "COMP 340",
+        "COMP 342",
+        "COMP 350",
+        "COMP 448",
+        "ENGR 156",
+        "ENGR 301",
+        "ENGR 401",
+        "ENGR 402",
+        "ENGR 451",
+        "ENGR 452"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Math/Science Core",
+      "courses": [
+        "MATH 213",
+        "MATH 214",
+        "MATH 161",
+        "MATH 162",
+        "MATH 261",
+        "MATH 262",
+        "PHYS 101",
+        "PHYS 102",
+        "ENGR 120"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Technical Electives",
+      "creditsRequired": 6,
+      "courses": []
+    }
+  ]
+}

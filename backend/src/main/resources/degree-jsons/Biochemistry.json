@@ -1,0 +1,62 @@
+{
+  "degree": "Biochemistry",
+  "requirements": [
+    {
+      "type": "required",
+      "category": "Biochemistry Core",
+      "courses": [
+        "CHEM 111",
+        "CHEM 113",
+        "CHEM 112",
+        "CHEM 114",
+        "CHEM 141",
+        "CHEM 227",
+        "CHEM 231",
+        "CHEM 235",
+        "CHEM 241",
+        "CHEM 242",
+        "CHEM 342",
+        "CHEM 351",
+        "CHEM 352",
+        "CHEM 451",
+        "CHEM 487",
+        "BIOL 101",
+        "BIOL 233",
+        "BIOL 234"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "Major-Related Requirements",
+      "courses": [
+        "MATH 161",
+        "MATH 162",
+        "PSYC 201"
+      ]
+    },
+    {
+      "type": "required",
+      "category": "General Education",
+      "courses": [
+        "HUMA 102",
+        "HUMA 200",
+        "HUMA 202",
+        "HUMA 301",
+        "HUMA 303",
+        "WRIT 101",
+        "PHYE 100"
+      ]
+    },
+    {
+      "type": "elective",
+      "category": "Physics Sequence Choice",
+      "creditsRequired": 8,
+      "courses": [
+        "PHYS 101",
+        "PHYS 102",
+        "PHYS 121",
+        "PHYS 122"
+      ]
+    }
+  ]
+}
