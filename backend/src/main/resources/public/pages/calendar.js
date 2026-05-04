@@ -351,54 +351,42 @@ window.refreshSchedule = function () {
 
         const { jsPDF } = window.jspdf;
 
-        const calendar = document.querySelector(".calendar-wrapper");
+        const calendar = document.querySelector(".col-8");
 
-        const canvas = await html2canvas(calendar, {scale: 2});
+        const canvas = await html2canvas(calendar, {
+            scale: 2,
+            backgroundColor: "#ffffff"
+        });
 
         const imgData = canvas.toDataURL("image/png");
 
+        // 🔑 Convert pixels → inches (assuming 96 DPI)
+        const pxToIn = (px) => px / 96;
+
+        const imgWidthIn = pxToIn(canvas.width);
+        const imgHeightIn = pxToIn(canvas.height);
+
+        const margin = 0.5;
+
+        // ✅ PDF size = image + margins
+        const pdfWidth = imgWidthIn + (margin * 2);
+        const pdfHeight = imgHeightIn + (margin * 2);
+
         const pdf = new jsPDF({
-            orientation: "portrait",
+            orientation: pdfWidth > pdfHeight ? "landscape" : "portrait",
             unit: "in",
-            format: "letter"
+            format: [pdfWidth, pdfHeight]
         });
 
-       // Page dimensions
-       const pageWidth = 11;   // inches
-       const pageHeight = 8.5;
+        // Place image inside margins
+        pdf.addImage(
+            imgData,
+            "PNG",
+            margin,
+            margin,
+            imgWidthIn,
+            imgHeightIn
+        );
 
-       // Margins
-       const margin = 0.5;
-
-       // Title
-       pdf.setFont("helvetica", "bold");
-       pdf.setFontSize(20);
-       pdf.text("My Schedule", pageWidth / 2, margin, { align: "center" });
-
-       // Space for title
-       const titleHeight = 0.5;
-
-       // Available space for image
-       const availableWidth = pageWidth - (margin * 2);
-       const availableHeight = pageHeight - margin - titleHeight - margin;
-
-       // Convert canvas size to inches ratio
-       const imgAspectRatio = canvas.width / canvas.height;
-
-       let imgWidth = availableWidth;
-       let imgHeight = imgWidth / imgAspectRatio;
-
-       // If too tall, scale down
-       if (imgHeight > availableHeight) {
-           imgHeight = availableHeight;
-           imgWidth = imgHeight * imgAspectRatio;
-       }
-
-       // Center image
-       const x = (pageWidth - imgWidth) / 2;
-       const y = margin + titleHeight;
-
-       pdf.addImage(imgData, "PNG", x, y, imgWidth, imgHeight);
-
-       pdf.save("schedule.pdf");
+        pdf.save("schedule.pdf");
     }
